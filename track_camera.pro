@@ -23,8 +23,10 @@ LIBS += -L/usr/local/lib \
 	-lopencv_flann
 
 SOURCES += main.cpp\
-        GuiMainWindow.cpp
+        GuiMainWindow.cpp \
+    Capture.cpp
 
-HEADERS  += GuiMainWindow.hpp
+HEADERS  += GuiMainWindow.hpp \
+    Capture.hpp
 
 FORMS    += GuiMainWindow.ui
