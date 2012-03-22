@@ -1,2 +1,12 @@
+#Ignore complier files
 *.o
+
+#Ignore build generated project files
 *.pro.user
+Makefile
+moc_*.cpp
+ui_*.h
+
+#Ignore executables
+track_camera
+
