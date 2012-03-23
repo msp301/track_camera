@@ -22,5 +22,5 @@ cv::Mat Capture::grabFrame()
 //check whether input device is ready
 bool Capture::isReady()
 {
-    ( capture->isOpened() ) ? true : false;
+    return ( capture->isOpened() ) ? true : false;
 }
