@@ -24,9 +24,11 @@ LIBS += -L/usr/local/lib \
 
 SOURCES += main.cpp\
         GuiMainWindow.cpp \
-    Capture.cpp
+    Capture.cpp \
+    GuiMain.cpp
 
 HEADERS  += GuiMainWindow.hpp \
-    Capture.hpp
+    Capture.hpp \
+    GuiMain.hpp
 
 FORMS    += GuiMainWindow.ui
