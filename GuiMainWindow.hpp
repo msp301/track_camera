@@ -17,6 +17,10 @@ class GuiMainWindow : public QMainWindow
 		
 	private:
 		Ui::GuiMainWindow *ui;
+
+    private slots:
+        void displayVideo();
+        void displayFrame( QImage frame );
 };
 
 #endif // GUIMAINWINDOW_HPP
