@@ -12,15 +12,14 @@ using namespace std;
 class GuiMain : public QThread
 {
     public:
-        GuiMain( string name, Capture *camera );
+        GuiMain( string name, VideoBuffer *buffer );
         ~GuiMain();
         void run();
-        void displayVideo( Capture *camera );
     private:
         void close();
 
         string window_name;
-        Capture *input;
+        VideoBuffer *video_buffer;
 };
 
 #endif // GUIMAIN_HPP

@@ -5,18 +5,22 @@
 #include "FaceTracking.hpp"
 
 #include <iostream>
+#include <vector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 int main(int argc, char *argv[])
 {
-    Capture *camera = new Capture; //create new camera object
-    GuiMain *window = new GuiMain( "window", camera );
+    VideoBuffer *buffer = new VideoBuffer; //create new video buffer
+    Capture *camera = new Capture( buffer ); //create new camera object
+    camera->start(); //start capturing video stream from camera
+
+    GuiMain *window = new GuiMain( "window", buffer );
     window->start(); //start window
 
-    FaceTracking *tracker = new FaceTracking( camera );
-    tracker->start();
+    //FaceTracking *tracker = new FaceTracking( camera );
+    //tracker->start();
 
     while( true )
     {

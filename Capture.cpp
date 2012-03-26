@@ -2,14 +2,22 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
-Capture::Capture()
+Capture::Capture( VideoBuffer *buffer )
 {
+    video_buffer = buffer;
     capture = new cv::VideoCapture( 0 ); //set video device to default
 }
 
 Capture::~Capture()
 {
     capture->release(); //disconnect camera before closing program
+}
+
+//thread implementation to start video stream capturing
+void Capture::run()
+{
+    cv::Mat frame = grabFrame(); //grab frame from video device
+    video_buffer->add( frame ); //add frame to video buffer
 }
 
 //grab current frame from input capture device

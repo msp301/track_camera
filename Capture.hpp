@@ -1,16 +1,20 @@
 #ifndef CAPTURE_HPP
 #define CAPTURE_HPP
 
+#include "VideoBuffer.hpp"
+
 #include <QImage>
+#include <QThread>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-class Capture
+class Capture : public QThread
 {
     public:
-        Capture();
+        Capture( VideoBuffer *buffer );
         ~Capture();
+        void run();
         cv::Mat grabFrame();
         QImage grabConvertedFrame();
         cv::Mat grabStream();
@@ -18,6 +22,7 @@ class Capture
     private:
         cv::Mat frame;
         cv::VideoCapture *capture;
+        VideoBuffer *video_buffer;
 };
 
 #endif // CAPTURE_HPP

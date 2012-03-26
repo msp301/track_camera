@@ -2,18 +2,16 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-#include <iostream>
-
-GuiMain::GuiMain( string name, Capture *camera )
+GuiMain::GuiMain( string name, VideoBuffer *buffer )
 {
-    input = camera;
+    video_buffer = buffer;
     window_name = name /*"Track Camera"*/;
     cv::namedWindow( window_name, 1 );
 }
 
 GuiMain::~GuiMain()
 {
-    delete input; //clean pointer to Capture instance
+    delete video_buffer; //clean pointer to Capture instance
     cv::destroyWindow( window_name );
 }
 
@@ -21,7 +19,8 @@ void GuiMain::run()
 {
     while( true )
     {
-        cv::Mat frame = input->grabFrame();
+        //cv::Mat frame = input->grabFrame();
+        cv::Mat frame = video_buffer->read();
         cv::imshow( window_name, frame );
         cv::waitKey( 20 );
     }
