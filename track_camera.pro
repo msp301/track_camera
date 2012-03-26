@@ -22,15 +22,15 @@ LIBS += -L/usr/local/lib \
 	-lopencv_legacy \
 	-lopencv_flann
 
-SOURCES += main.cpp\
-        GuiMainWindow.cpp \
+SOURCES += main.cpp \
     Capture.cpp \
     GuiMain.cpp \
-    FaceTracking.cpp
+    FaceTracking.cpp \
+    VideoBuffer.cpp
 
-HEADERS  += GuiMainWindow.hpp \
-    Capture.hpp \
+HEADERS  += Capture.hpp \
     GuiMain.hpp \
-    FaceTracking.hpp
+    FaceTracking.hpp \
+    VideoBuffer.hpp
 
 FORMS    += GuiMainWindow.ui
