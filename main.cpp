@@ -2,6 +2,7 @@
 #include "GuiMainWindow.hpp"
 #include "Capture.hpp"
 #include "GuiMain.hpp"
+#include "FaceTracking.hpp"
 
 #include <iostream>
 
@@ -13,6 +14,9 @@ int main(int argc, char *argv[])
     Capture *camera = new Capture; //create new camera object
     GuiMain *window = new GuiMain( "window", camera );
     window->start(); //start window
+
+    FaceTracking *tracker = new FaceTracking( camera );
+    tracker->start();
 
     while( true )
     {

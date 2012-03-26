@@ -25,10 +25,12 @@ LIBS += -L/usr/local/lib \
 SOURCES += main.cpp\
         GuiMainWindow.cpp \
     Capture.cpp \
-    GuiMain.cpp
+    GuiMain.cpp \
+    FaceTracking.cpp
 
 HEADERS  += GuiMainWindow.hpp \
     Capture.hpp \
-    GuiMain.hpp
+    GuiMain.hpp \
+    FaceTracking.hpp
 
 FORMS    += GuiMainWindow.ui
