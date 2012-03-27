@@ -11,9 +11,10 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+    video_buffer = new VideoBuffer; //create video buffer for captured frames
+    video_stream = new VideoStream( video_buffer ); //create video stream handler
+
     //QPushButton *btn_start_video = new QPushButton;
-    connect( ui->btn_start_video, SIGNAL( clicked() ),
-             this, SLOT( displayVideo() ) );
 }
 
 GuiMainWindow::~GuiMainWindow()
@@ -21,8 +22,15 @@ GuiMainWindow::~GuiMainWindow()
 	delete ui;
 }
 
+//create all required connections between GUI elements
+void GuiMainWindow::createConnections()
+{
+    connect( ui->btn_start_video, SIGNAL( clicked() ),
+             this, SLOT( displayVideo() ) );
+}
+
 //display video output to interface
-void GuiMainWindow::displayVideo()
+/*void GuiMainWindow::displayVideo()
 {
     Capture *camera = new Capture;
 
@@ -31,7 +39,7 @@ void GuiMainWindow::displayVideo()
         QImage frame = camera->grabConvertedFrame();
         displayFrame( frame );
     }
-}
+}*/
 
 void GuiMainWindow::displayFrame( QImage frame )
 {
