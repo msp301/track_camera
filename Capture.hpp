@@ -12,7 +12,7 @@
 class Capture : public QThread
 {
     public:
-        Capture( VideoBuffer *buffer );
+        Capture( cv::VideoCapture *camera, VideoBuffer *buffer );
         ~Capture();
         void run();
         cv::Mat grabFrame();

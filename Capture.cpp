@@ -2,10 +2,12 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
-Capture::Capture( VideoBuffer *buffer )
+#include <iostream>
+
+Capture::Capture( cv::VideoCapture *camera, VideoBuffer *buffer )
 {
     video_buffer = buffer;
-    capture = new cv::VideoCapture( 0 ); //set video device to default
+    capture = camera; //store reference to camera device
 }
 
 Capture::~Capture()
@@ -16,8 +18,12 @@ Capture::~Capture()
 //thread implementation to start video stream capturing
 void Capture::run()
 {
-    cv::Mat frame = grabFrame(); //grab frame from video device
-    video_buffer->add( frame ); //add frame to video buffer
+    cout << "Capture: Started stream capture thread" << endl;
+    while( true )
+    {
+        cv::Mat frame = grabFrame(); //grab frame from video device
+        video_buffer->add( frame ); //add frame to video buffer
+    }
 }
 
 //grab current frame from input capture device
@@ -28,6 +34,7 @@ cv::Mat Capture::grabFrame()
     //check input device is available before reading
     if( isReady() )
     {
+        cout << "Capture: About to grab frame" << endl;
         capture->operator >>( frame ); //capture frame from video device
     }
 
