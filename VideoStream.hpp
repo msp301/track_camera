@@ -4,6 +4,8 @@
 #include <Capture.hpp>
 #include <VideoBuffer.hpp>
 
+#include <opencv2/highgui/highgui.hpp>
+
 class VideoStream
 {
     public:
@@ -15,6 +17,7 @@ class VideoStream
     private:
         Capture *capture;
         VideoBuffer *video_buffer;
+        cv::VideoCapture *camera;
 };
 
 #endif // VIDEOSTREAM_HPP
