@@ -28,7 +28,7 @@ class GuiMainWindow : public QMainWindow
         VideoStream *video_stream;
 
     private slots:
-        //void displayVideo();
+        void displayVideo();
         void displayFrame( QImage frame );
 };
 
