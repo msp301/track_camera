@@ -2,6 +2,8 @@
 
 #include <QMutexLocker>
 
+#include <iostream>
+
 VideoBuffer::VideoBuffer()
 {
 }
@@ -10,7 +12,8 @@ VideoBuffer::VideoBuffer()
 void VideoBuffer::add( cv::Mat frame )
 {
     //create mutex locker to enforce mutual exclusion
-    QMutexLocker locker( mutex );
+    //QMutexLocker locker( mutex );
+    cout << "VideoBuffer: Adding new frame" << endl;
     buffer.push_back( frame ); //push frame onto end of buffer
 }
 
@@ -18,6 +21,9 @@ void VideoBuffer::add( cv::Mat frame )
 cv::Mat VideoBuffer::read()
 {
     //create mutex locker to enforce mutual exclusion
-    QMutexLocker locker( mutex );
-    return buffer.front(); //return frame on the front of the buffer
+    //QMutexLocker locker( mutex );
+    cout << "VideoBuffer: Reading frame" << endl;
+    cv::Mat frame = buffer.front(); //return frame on the front of the buffer
+    buffer.erase( buffer.begin() ); //remove frame from front of buffer
+    return frame;
 }
