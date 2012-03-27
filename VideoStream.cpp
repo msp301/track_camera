@@ -10,13 +10,17 @@ VideoStream::VideoStream( VideoBuffer *buffer )
 //start video capturing thread execution
 void VideoStream::start()
 {
-    capture->start(); //start capturing video in dedicated thread
+    //start capturing video in dedicated thread only if capture has not
+    //already been started and the camera device is ready for reading
+    if( !capture->isRunning() &&
+            camera->isOpened() ) capture->start();
 }
 
 //pause video capturing thread execution
 void VideoStream::stop()
 {
-    capture->wait(); //pause capture thread
+    //pause capture thread if running
+    if( capture->isRunning() ) capture->wait();
 }
 
 //create new capture instance

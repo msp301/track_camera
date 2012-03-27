@@ -16,7 +16,6 @@ class Capture : public QThread
         ~Capture();
         void run();
         cv::Mat grabFrame();
-        bool isReady();
     private:
         cv::Mat frame;
         cv::VideoCapture *capture;

@@ -31,20 +31,10 @@ cv::Mat Capture::grabFrame()
 {
     cv::Mat frame;
 
-    //check input device is available before reading
-    if( isReady() )
-    {
-        cout << "Capture: About to grab frame" << endl;
-        capture->operator >>( frame ); //capture frame from video device
-    }
+    cout << "Capture: About to grab frame" << endl;
+    capture->operator >>( frame ); //capture frame from video device
 
     return frame;
-}
-
-//check whether input device is ready
-bool Capture::isReady()
-{
-    return ( capture->isOpened() ) ? true : false;
 }
 
 
