@@ -16,8 +16,6 @@ class Capture : public QThread
         ~Capture();
         void run();
         cv::Mat grabFrame();
-        QImage grabConvertedFrame();
-        cv::Mat grabStream();
         bool isReady();
     private:
         cv::Mat frame;
