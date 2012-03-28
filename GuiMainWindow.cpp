@@ -15,6 +15,8 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     video_stream = new VideoStream( video_buffer ); //create video stream handler
     video_display = new DisplayStream( video_buffer ); //create display handler
 
+    face_tracking = new FaceTracking( video_buffer ); //create face tracking handler
+
     createConnections(); //setup UI callback connections
 }
 

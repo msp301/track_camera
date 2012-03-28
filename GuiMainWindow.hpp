@@ -5,6 +5,7 @@
 #include "VideoBuffer.hpp"
 #include "VideoStream.hpp"
 #include "DisplayStream.hpp"
+#include "FaceTracking.hpp"
 
 #include <QMainWindow>
 
@@ -30,6 +31,7 @@ class GuiMainWindow : public QMainWindow
         VideoBuffer *video_buffer;
         VideoStream *video_stream;
         DisplayStream *video_display;
+        FaceTracking *face_tracking;
 
     public slots:
         void displayVideo();

@@ -2,6 +2,7 @@
 #define FACETRACKING_HPP
 
 #include "Capture.hpp"
+#include "VideoBuffer.hpp"
 
 #include <QThread>
 
@@ -10,12 +11,12 @@
 class FaceTracking : public QThread
 {
     public:
-        FaceTracking( Capture *camera );
+        FaceTracking( VideoBuffer *buffer );
         void run();
     private:
         void detectFace( cv::Mat frame );
 
-        Capture *input;
+        VideoBuffer *video_buffer;
 };
 
 #endif // FACETRACKING_HPP
