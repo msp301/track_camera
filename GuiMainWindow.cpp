@@ -9,7 +9,9 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::GuiMainWindow)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
+
+    setWindowTitle( "Track Camera" );
 
     video_buffer = new VideoBuffer; //create video buffer for captured frames
     video_stream = new VideoStream( video_buffer ); //create video stream handler
@@ -28,9 +30,7 @@ GuiMainWindow::~GuiMainWindow()
 //create all required connections between GUI elements
 void GuiMainWindow::createConnections()
 {
-    //connect start video button to display video signal
-    connect( ui->btn_start_video, SIGNAL( clicked() ),
-             this, SLOT( displayVideo() ) );
+    createMenuConnections(); //setup menu connections
 
     //define cv::Mat as a Qt type so that it can be used within a signal
     qRegisterMetaType<cv::Mat>( "cv::Mat" );
@@ -38,6 +38,19 @@ void GuiMainWindow::createConnections()
     //connect DisplayStream thread to camera output label on UI
     connect( video_display, SIGNAL( frameReady( cv::Mat ) ),
              this, SLOT( displayFrame( cv::Mat ) ) );
+}
+
+//create required connections for menu actions
+void GuiMainWindow::createMenuConnections()
+{
+    // ----- Camera menu -----
+
+    //Camera > Start = start video
+    connect( ui->actionStart, SIGNAL( triggered() ),
+             this, SLOT( displayVideo() ) );
+
+    //Camera > Quit = exit application
+    connect( ui->actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
 }
 
 //start reading video output stream

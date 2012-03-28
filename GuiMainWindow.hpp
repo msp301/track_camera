@@ -23,8 +23,9 @@ class GuiMainWindow : public QMainWindow
 		explicit GuiMainWindow(QWidget *parent = 0);
 		~GuiMainWindow();
 		
-	private:
+    private:
         void createConnections();
+        void createMenuConnections();
 
 		Ui::GuiMainWindow *ui;
         Capture *capture;
