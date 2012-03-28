@@ -3,7 +3,6 @@
 
 #include "VideoBuffer.hpp"
 
-#include <QImage>
 #include <QThread>
 
 #include <opencv2/core/core.hpp>
