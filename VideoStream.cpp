@@ -4,6 +4,7 @@ VideoStream::VideoStream( VideoBuffer *buffer )
 {
     video_buffer = buffer; //store video buffer location
     camera = new cv::VideoCapture( 0 ); //create link to default camera
+    capture = NULL; //ensure capture interface is empty
     create(); //create new capture interface
 }
 
@@ -52,6 +53,7 @@ bool VideoStream::remove()
     if( capture != NULL )
     {
         delete capture; //delete capture interface instance
+        capture = NULL; //set capture to empty
     }
     else
     {
