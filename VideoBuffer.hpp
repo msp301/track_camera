@@ -2,6 +2,7 @@
 #define VIDEOBUFFER_HPP
 
 #include <QMutex>
+#include <QSemaphore>
 
 #include <vector>
 
@@ -18,6 +19,7 @@ class VideoBuffer
     private:
         vector<cv::Mat> buffer;
         QMutex *mutex;
+        QSemaphore *semaphore;
 };
 
 #endif // VIDEOBUFFER_HPP

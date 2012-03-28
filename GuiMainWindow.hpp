@@ -4,8 +4,11 @@
 #include "Capture.hpp"
 #include "VideoBuffer.hpp"
 #include "VideoStream.hpp"
+#include "DisplayStream.hpp"
 
 #include <QMainWindow>
+
+#include <opencv2/core/core.hpp>
 
 namespace Ui {
 	class GuiMainWindow;
@@ -26,10 +29,11 @@ class GuiMainWindow : public QMainWindow
         Capture *capture;
         VideoBuffer *video_buffer;
         VideoStream *video_stream;
+        DisplayStream *video_display;
 
-    private slots:
+    public slots:
         void displayVideo();
-        void displayFrame( QImage frame );
+        void displayFrame( cv::Mat frame );
 };
 
 #endif // GUIMAINWINDOW_HPP

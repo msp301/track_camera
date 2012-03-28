@@ -23,6 +23,7 @@ void Capture::run()
     {
         cv::Mat frame = grabFrame(); //grab frame from video device
         video_buffer->add( frame ); //add frame to video buffer
+        msleep( 60 );
     }
 }
 

@@ -28,13 +28,15 @@ SOURCES += main.cpp \
 	GuiMainWindow.cpp \
 	FaceTracking.cpp \
     VideoBuffer.cpp \
-    VideoStream.cpp
+    VideoStream.cpp \
+    DisplayStream.cpp
 
 HEADERS  += Capture.hpp \
     GuiMain.hpp \
 	GuiMainWindow.hpp \
     FaceTracking.hpp \
     VideoBuffer.hpp \
-    VideoStream.hpp
+    VideoStream.hpp \
+    DisplayStream.hpp
 
 FORMS    += GuiMainWindow.ui
