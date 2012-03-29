@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <QSemaphore>
+
 #include <opencv2/core/core.hpp>
 
 using namespace std;
@@ -14,7 +16,11 @@ class VideoBuffer
         void add( cv::Mat frame );
         cv::Mat read();
     private:
-        vector<cv::Mat> buffer;
+        cv::Mat buffer[];
+        int buffer_head;
+        int buffer_tail;
+        int buffer_size;
+        QSemaphore *sem;
 };
 
 #endif // VIDEOBUFFER_HPP
