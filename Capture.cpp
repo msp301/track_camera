@@ -19,7 +19,13 @@ void Capture::run()
     while( true )
     {
         cv::Mat frame = grabFrame(); //grab frame from video device
-        video_buffer->add( frame ); //add frame to video buffer
+
+        //do not write empty frames to video buffer
+        if( !frame.empty() )
+        {
+            video_buffer->add( frame ); //add frame to video buffer
+        }
+
         msleep( 60 );
     }
 }
