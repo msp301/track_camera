@@ -20,11 +20,13 @@ class FaceTracking : public QThread
     signals:
         void frameReady( cv::Mat frame );
     private:
-        vector<cv::Rect> detectFace( cv::Mat frame );
-        void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
-
         VideoBuffer *video_buffer;
         string haar_face_classifier_location;
+        struct coordinate;
+
+        vector<cv::Rect> detectFace( cv::Mat frame );
+        void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
+        vector<coordinate> getFacePositions( vector<cv::Rect> faces );
 };
 
 #endif // FACETRACKING_HPP

@@ -7,6 +7,11 @@
 
 using namespace std;
 
+struct FaceTracking::coordinate
+{
+    int x, y;
+};
+
 FaceTracking::FaceTracking( VideoBuffer *buffer )
 {
     video_buffer = buffer; //store local reference to given video buffer
@@ -29,6 +34,7 @@ void FaceTracking::run()
         {
             faces = detectFace( frame );
             displayDetectedFaces( frame, faces );
+            getFacePositions( faces );
         }
     }
 }
@@ -73,4 +79,25 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 
         emit( frameReady( frame ) ); //inform UI of new frame
     }
+}
+
+//determine central positions for each identified face
+vector<FaceTracking::coordinate> FaceTracking::getFacePositions(
+        vector<cv::Rect> faces )
+{
+    vector<FaceTracking::coordinate> coordinates;
+    FaceTracking::coordinate face_position;
+
+    //find central position of detected face areas
+    foreach( cv::Rect face, faces )
+    {
+        //find centre of given face area
+        face_position.x = ( ( face.x + face.width ) - 1 ) / 2;
+        face_position.y = ( ( face.y + face.height ) - 1 ) / 2;
+
+        //add coordinate to result vector
+        coordinates.push_back( face_position );
+    }
+
+    return coordinates;
 }
