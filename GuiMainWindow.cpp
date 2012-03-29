@@ -38,6 +38,10 @@ void GuiMainWindow::createConnections()
     //connect DisplayStream thread to camera output label on UI
     connect( video_display, SIGNAL( frameReady( cv::Mat ) ),
              this, SLOT( displayFrame( cv::Mat ) ) );
+
+    //connect FaceTracking thread to camera output label on UI
+    connect( face_tracking, SIGNAL( frameReady( cv::Mat ) ),
+             this, SLOT( displayFrame( cv::Mat ) ) );
 }
 
 //create required connections for menu actions
@@ -57,7 +61,8 @@ void GuiMainWindow::createMenuConnections()
 void GuiMainWindow::displayVideo()
 {
     video_stream->start(); //start video stream
-    video_display->start(); //start reading from video buffer
+    face_tracking->start(); //start tracking faces
+    //video_display->start(); //start reading from video buffer
 }
 
 //display video frame to interface
