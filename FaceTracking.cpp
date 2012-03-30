@@ -53,8 +53,22 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     if( haar_face_classifier.load( haar_face_classifier_location ) )
     {
         //match faces of different sizes within video frame
-        haar_face_classifier.detectMultiScale( conv_frame, faces, 1.1, 2,
-                                0 | CV_HAAR_SCALE_IMAGE, cv::Size( 30, 30 ) );
+        haar_face_classifier.detectMultiScale( conv_frame, faces, 1.1, 3,
+                                0 | CV_HAAR_SCALE_IMAGE, cv::Size( 80, 80 ) );
+
+        foreach( cv::Rect face, faces )
+        {
+            foreach( cv::Rect other, faces )
+            {
+                if( ( face.x + 10 ) >= other.x &&
+                    ( face.x - 10 ) <= other.x &&
+                    ( face.x + face.width + 10 ) >= ( other.x + face.width ) &&
+                    ( face.x + face.width - 10 ) <= ( other.x + face.width ) )
+                {
+                    //remove close match
+                }
+            }
+        }
 
         qDebug() << "Faces detected = " << faces.size();
     }
