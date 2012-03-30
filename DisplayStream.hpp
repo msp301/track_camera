@@ -4,6 +4,7 @@
 #include "VideoBuffer.hpp"
 
 #include <QThread>
+#include <QMutex>
 
 #include <opencv2/core/core.hpp>
 
@@ -14,10 +15,12 @@ class DisplayStream : public QThread
     public:
         DisplayStream( VideoBuffer *buffer );
         void run();
+        void setVideoBuffer( VideoBuffer *buffer );
     signals:
         void frameReady( cv::Mat frame );
     private:
         VideoBuffer *video_buffer;
+        QMutex *mutex;
 };
 
 #endif // DISPLAYSTREAM_HPP
