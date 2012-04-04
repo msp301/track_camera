@@ -2,21 +2,25 @@
 
 VideoBuffer::VideoBuffer()
 {
-    buffer[1000]; //set size of video buffer
+    buffer = new cv::Mat[1000]; //set size of video buffer
     buffer_head = 0; //set head of buffer
     buffer_tail = 0; //set tail of buffer
     buffer_size = 0; //count number of elements on buffer
-    sem = new QSemaphore( 1 );
+    mutex = new QMutex;
 }
 
 //insert frame onto end of buffer
 void VideoBuffer::add( cv::Mat frame )
 {
     //buffer.push_back( frame ); //push frame onto end of buffer
-    sem->acquire( 1 );
-    buffer[ buffer_tail ] = frame;
-    if( ( buffer_tail + 1 ) == buffer_size ) buffer_tail++;
-    sem->release( 1 );
+    if( !frame.empty() )
+    {
+        mutex->lock();
+        buffer[ buffer_tail ] = frame;
+        buffer_tail = ( ( buffer_tail + 1 ) == buffer_size ) ? 0 : buffer_tail + 1;
+        buffer_size = sizeof( buffer );
+        mutex->unlock();
+    }
 }
 
 //access frame from front of buffer
@@ -28,10 +32,10 @@ cv::Mat VideoBuffer::read()
     if( buffer_size > 0 )
     {
         //frame = buffer.front(); //return frame on the front of the buffer
-        sem->acquire( 1 );
+        mutex->lock();
         frame = buffer[ buffer_head ];
-        buffer_head++;
-        sem->release( 1 );
+        buffer_head = ( ( buffer_head + 1 ) == buffer_size ) ? 0 : buffer_head + 1;
+        mutex->unlock();
     }
 
     return frame;
