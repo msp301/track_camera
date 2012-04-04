@@ -12,9 +12,10 @@ struct FaceTracking::coordinate
     int x, y;
 };
 
-FaceTracking::FaceTracking( VideoBuffer *buffer )
+FaceTracking::FaceTracking( VideoBuffer *buffer, VideoBuffer *output )
 {
     video_buffer = buffer; //store local reference to given video buffer
+    output_buffer = output; //store reference to given output video buffer
     haar_face_classifier_location =
             "/home/martin/src/OpenCV-2.3.1/data/haarcascades/haarcascade_frontalface_default.xml";
 }
@@ -33,8 +34,17 @@ void FaceTracking::run()
         if( !frame.empty() )
         {
             faces = detectFace( frame );
-            displayDetectedFaces( frame, faces );
-            getFacePositions( faces );
+
+            if( faces.size() > 0 )
+            {
+                qDebug() << "Frame Accepted";
+                getFacePositions( faces );
+                displayDetectedFaces( frame, faces );
+            }
+            else
+            {
+                qDebug() << "Frame Discarded";
+            }
         }
     }
 }
@@ -77,7 +87,8 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
         //draw rectangle on image to specified size of face
         cv::rectangle( frame, pt1, pt2, cv::Scalar( 255, 0, 0, 0 ), 4, 8, 0 );
 
-        emit( frameReady( frame ) ); //inform UI of new frame
+        //emit( frameReady( frame ) ); //inform UI of new frame
+        output_buffer->add( frame ); //add processed frame to output buffer
     }
 }
 

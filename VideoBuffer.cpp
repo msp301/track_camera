@@ -1,18 +1,20 @@
 #include "VideoBuffer.hpp"
 
-VideoBuffer::VideoBuffer()
+#include <QDebug>
+
+VideoBuffer::VideoBuffer( QString name )
 {
     buffer = new cv::Mat[1000]; //set size of video buffer
     buffer_head = 0; //set head of buffer
     buffer_tail = 0; //set tail of buffer
     buffer_size = 0; //count number of elements on buffer
     mutex = new QMutex;
+    buffer_name = name;
 }
 
 //insert frame onto end of buffer
 void VideoBuffer::add( cv::Mat frame )
 {
-    //buffer.push_back( frame ); //push frame onto end of buffer
     if( !frame.empty() )
     {
         mutex->lock();
@@ -21,6 +23,7 @@ void VideoBuffer::add( cv::Mat frame )
         buffer_size = sizeof( buffer );
         mutex->unlock();
     }
+    if( buffer_name == "tracking" ) qDebug() << "Adding frame to " << buffer_name;
 }
 
 //access frame from front of buffer
@@ -31,7 +34,6 @@ cv::Mat VideoBuffer::read()
     //ensure data exists in the buffer before reading
     if( buffer_size > 0 )
     {
-        //frame = buffer.front(); //return frame on the front of the buffer
         mutex->lock();
         frame = buffer[ buffer_head ];
         buffer_head = ( ( buffer_head + 1 ) == buffer_size ) ? 0 : buffer_head + 1;
@@ -39,4 +41,9 @@ cv::Mat VideoBuffer::read()
     }
 
     return frame;
+}
+
+QString VideoBuffer::whoami()
+{
+    return buffer_name;
 }
