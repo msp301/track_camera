@@ -1,7 +1,7 @@
 #ifndef VIDEOBUFFER_HPP
 #define VIDEOBUFFER_HPP
 
-#include <vector>
+#include <QMutex>
 
 #include <opencv2/core/core.hpp>
 
@@ -14,7 +14,11 @@ class VideoBuffer
         void add( cv::Mat frame );
         cv::Mat read();
     private:
-        vector<cv::Mat> buffer;
+        cv::Mat *buffer;
+        int buffer_head;
+        int buffer_tail;
+        int buffer_size;
+        QMutex *mutex;
 };
 
 #endif // VIDEOBUFFER_HPP
