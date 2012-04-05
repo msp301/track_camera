@@ -14,14 +14,11 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     setWindowTitle( "Track Camera" );
 
     QString cap_buffer( "capture" );
-    QString track_buffer( "tracking" );
-
-    video_tracking_buffer = new VideoBuffer( track_buffer ); //create buffer for processed frames
 
     video_buffer = new VideoBuffer( cap_buffer ); //create video buffer for captured frames
     video_stream = new VideoStream( video_buffer ); //create video stream handler
 
-    face_tracking = new FaceTracking( video_buffer, video_tracking_buffer ); //create face tracking handler
+    face_tracking = new FaceTracking( video_buffer ); //create face tracking handler
 
     video_display = new DisplayStream( video_buffer ); //create display handler
 
@@ -44,10 +41,6 @@ void GuiMainWindow::createConnections()
     //connect DisplayStream thread to camera output label on UI
     connect( video_display, SIGNAL( frameReady( cv::Mat ) ),
              this, SLOT( displayFrame( cv::Mat ) ) );
-
-    //connect FaceTracking thread to camera output label on UI
-    //connect( face_tracking, SIGNAL( frameReady( cv::Mat ) ),
-    //         this, SLOT( displayFrame( cv::Mat ) ) );
 }
 
 //create required connections for menu actions
@@ -66,7 +59,7 @@ void GuiMainWindow::createMenuConnections()
 
     //Edit > Show Faces = display face identification
     connect( ui->actionShow_Faces, SIGNAL( triggered() ),
-             this, SLOT( setDisplayBuffer( /*video_tracking_buffer*/ ) ) );
+             this, SLOT( toggleDisplayFaces() ) );
 }
 
 //start reading video output stream
@@ -92,8 +85,8 @@ void GuiMainWindow::displayFrame( cv::Mat frame )
 }
 
 //change video buffer to be used as output
-void GuiMainWindow::setDisplayBuffer( /*VideoBuffer *buffer*/ )
+void GuiMainWindow::toggleDisplayFaces()
 {
-    //video_display->setVideoBuffer( video_tracking_buffer ); //set display buffer
-    face_tracking->setDisplayDetectedFaces( true );
+    //toggle whether to display detected faces or not
+    face_tracking->toggleDisplayDetectedFaces();
 }

@@ -16,14 +16,13 @@ class FaceTracking : public QThread
     Q_OBJECT
 
     public:
-        FaceTracking( VideoBuffer *buffer, VideoBuffer *output );
+        FaceTracking( VideoBuffer *buffer );
         void run();
-        void setDisplayDetectedFaces( bool state );
+        void toggleDisplayDetectedFaces();
     signals:
         //void frameReady( cv::Mat frame );
     private:
         VideoBuffer *video_buffer;
-        VideoBuffer *output_buffer;
         string haar_face_classifier_location;
         struct coordinate;
         vector<cv::Rect> previous_detected_faces;

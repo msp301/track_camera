@@ -32,13 +32,12 @@ class GuiMainWindow : public QMainWindow
         VideoBuffer *video_buffer;
         VideoStream *video_stream;
         DisplayStream *video_display;
-        VideoBuffer *video_tracking_buffer;
         FaceTracking *face_tracking;
 
     public slots:
         void displayVideo();
         void displayFrame( cv::Mat frame );
-        void setDisplayBuffer( /*VideoBuffer *buffer*/ );
+        void toggleDisplayFaces();
 };
 
 #endif // GUIMAINWINDOW_HPP

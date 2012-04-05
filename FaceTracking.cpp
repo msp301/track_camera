@@ -13,10 +13,9 @@ struct FaceTracking::coordinate
     int x, y;
 };
 
-FaceTracking::FaceTracking( VideoBuffer *buffer, VideoBuffer *output )
+FaceTracking::FaceTracking( VideoBuffer *buffer )
 {
     video_buffer = buffer; //store local reference to given video buffer
-    output_buffer = output; //store reference to given output video buffer
     haar_face_classifier_location =
             "/home/martin/src/OpenCV-2.3.1/data/haarcascades/haarcascade_frontalface_default.xml";
 
@@ -91,8 +90,8 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
         //draw rectangle on image to specified size of face
         cv::rectangle( frame, pt1, pt2, cv::Scalar( 255, 0, 0, 0 ), 4, 8, 0 );
 
-        //emit( frameReady( frame ) ); //inform UI of new frame
-        output_buffer->add( frame ); //add processed frame to output buffer
+        qDebug() << "FaceTracking: adding detected frame to buffer";
+        video_buffer->add( frame ); //add processed frame to output buffer
     }
 }
 
@@ -125,8 +124,8 @@ bool FaceTracking::showDetectedFaces()
 }
 
 //set whether to display detected faces or not
-void FaceTracking::setDisplayDetectedFaces( bool state )
+void FaceTracking::toggleDisplayDetectedFaces()
 {
     QMutexLocker lock( mutex );
-    display_faces = state;
+    display_faces = ( display_faces ) ? false : true;
 }
