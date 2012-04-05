@@ -19,8 +19,7 @@ class FaceTracking : public QThread
         FaceTracking( VideoBuffer *buffer );
         void run();
         void toggleDisplayDetectedFaces();
-    signals:
-        //void frameReady( cv::Mat frame );
+        bool showDetectedFaces();
     private:
         VideoBuffer *video_buffer;
         string haar_face_classifier_location;
@@ -32,7 +31,6 @@ class FaceTracking : public QThread
         vector<cv::Rect> detectFace( cv::Mat frame );
         void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
         vector<coordinate> getFacePositions( vector<cv::Rect> faces );
-        bool showDetectedFaces();
 };
 
 #endif // FACETRACKING_HPP

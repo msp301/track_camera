@@ -87,6 +87,16 @@ void GuiMainWindow::displayFrame( cv::Mat frame )
 //change video buffer to be used as output
 void GuiMainWindow::toggleDisplayFaces()
 {
+    //set menu item text appropriate to request
+    if( face_tracking->showDetectedFaces() )
+    {
+        ui->actionShow_Faces->setText( "Show Faces" );
+    }
+    else
+    {
+        ui->actionShow_Faces->setText( "Hide Faces" );
+    }
+
     //toggle whether to display detected faces or not
     face_tracking->toggleDisplayDetectedFaces();
 }
