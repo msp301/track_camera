@@ -94,5 +94,6 @@ void GuiMainWindow::displayFrame( cv::Mat frame )
 //change video buffer to be used as output
 void GuiMainWindow::setDisplayBuffer( /*VideoBuffer *buffer*/ )
 {
-    video_display->setVideoBuffer( video_tracking_buffer ); //set display buffer
+    //video_display->setVideoBuffer( video_tracking_buffer ); //set display buffer
+    face_tracking->setDisplayDetectedFaces( true );
 }

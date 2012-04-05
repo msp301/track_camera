@@ -1,6 +1,7 @@
 #include "FaceTracking.hpp"
 
 #include <QDebug>
+#include <QMutexLocker>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
@@ -18,6 +19,9 @@ FaceTracking::FaceTracking( VideoBuffer *buffer, VideoBuffer *output )
     output_buffer = output; //store reference to given output video buffer
     haar_face_classifier_location =
             "/home/martin/src/OpenCV-2.3.1/data/haarcascades/haarcascade_frontalface_default.xml";
+
+    display_faces = false;
+    mutex = new QMutex;
 }
 
 void FaceTracking::run()
@@ -39,7 +43,7 @@ void FaceTracking::run()
             {
                 qDebug() << "Frame Accepted";
                 getFacePositions( faces );
-                displayDetectedFaces( frame, faces );
+                if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
             }
             else
             {
@@ -111,4 +115,18 @@ vector<FaceTracking::coordinate> FaceTracking::getFacePositions(
     }
 
     return coordinates;
+}
+
+//check whether faces should be displayed
+bool FaceTracking::showDetectedFaces()
+{
+    QMutexLocker lock( mutex );
+    return display_faces;
+}
+
+//set whether to display detected faces or not
+void FaceTracking::setDisplayDetectedFaces( bool state )
+{
+    QMutexLocker lock( mutex );
+    display_faces = state;
 }

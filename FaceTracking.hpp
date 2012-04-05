@@ -7,6 +7,7 @@
 #include <string>
 
 #include <QThread>
+#include <QMutex>
 
 #include <opencv2/core/core.hpp>
 
@@ -17,6 +18,7 @@ class FaceTracking : public QThread
     public:
         FaceTracking( VideoBuffer *buffer, VideoBuffer *output );
         void run();
+        void setDisplayDetectedFaces( bool state );
     signals:
         //void frameReady( cv::Mat frame );
     private:
@@ -25,10 +27,13 @@ class FaceTracking : public QThread
         string haar_face_classifier_location;
         struct coordinate;
         vector<cv::Rect> previous_detected_faces;
+        bool display_faces;
+        QMutex *mutex;
 
         vector<cv::Rect> detectFace( cv::Mat frame );
         void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
         vector<coordinate> getFacePositions( vector<cv::Rect> faces );
+        bool showDetectedFaces();
 };
 
 #endif // FACETRACKING_HPP
