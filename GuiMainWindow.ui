@@ -16,6 +16,9 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QComboBox" name="cmb_device"/>
+    </item>
+    <item>
      <widget class="QLabel" name="lbl_camera_output">
       <property name="autoFillBackground">
        <bool>false</bool>

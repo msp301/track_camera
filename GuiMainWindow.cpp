@@ -5,6 +5,8 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <QDebug>
+
 GuiMainWindow::GuiMainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::GuiMainWindow)
@@ -22,12 +24,25 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 
     video_display = new DisplayStream( video_buffer ); //create display handler
 
+    stand = new StandController; //create new stand control handler
+
+    setupGui(); //setup window elements
     createConnections(); //setup UI callback connections
 }
 
 GuiMainWindow::~GuiMainWindow()
 {
 	delete ui;
+}
+
+//setup GUI elements
+void GuiMainWindow::setupGui()
+{
+    //add available devices to device list
+    foreach( QextPortInfo port, stand->availablePorts() )
+    {
+        ui->cmb_device->addItem( port.physName ); //add device to combo box
+    }
 }
 
 //create all required connections between GUI elements
@@ -41,6 +56,10 @@ void GuiMainWindow::createConnections()
     //connect DisplayStream thread to camera output label on UI
     connect( video_display, SIGNAL( frameReady( cv::Mat ) ),
              this, SLOT( displayFrame( cv::Mat ) ) );
+
+    //connect device combo box to selection of stand controller
+    connect( ui->cmb_device, SIGNAL( currentIndexChanged( QString ) ),
+             this, SLOT( setDevice( QString ) ) );
 }
 
 //create required connections for menu actions
@@ -99,4 +118,11 @@ void GuiMainWindow::toggleDisplayFaces()
 
     //toggle whether to display detected faces or not
     face_tracking->toggleDisplayDetectedFaces();
+}
+
+//set stand device
+void GuiMainWindow::setDevice( QString device_name )
+{
+    qDebug() << "About to Set Device";
+    stand->setPort( device_name ); //set stand device
 }

@@ -6,6 +6,7 @@
 #include "VideoStream.hpp"
 #include "DisplayStream.hpp"
 #include "FaceTracking.hpp"
+#include "StandController.hpp"
 
 #include <QMainWindow>
 
@@ -24,6 +25,7 @@ class GuiMainWindow : public QMainWindow
 		~GuiMainWindow();
 		
     private:
+        void setupGui();
         void createConnections();
         void createMenuConnections();
 
@@ -33,11 +35,13 @@ class GuiMainWindow : public QMainWindow
         VideoStream *video_stream;
         DisplayStream *video_display;
         FaceTracking *face_tracking;
+        StandController *stand;
 
     public slots:
         void displayVideo();
         void displayFrame( cv::Mat frame );
         void toggleDisplayFaces();
+        void setDevice( QString device_name );
 };
 
 #endif // GUIMAINWINDOW_HPP

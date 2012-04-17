@@ -1,8 +1,10 @@
 #include "StandController.hpp"
 
+#include <QDebug>
+
 StandController::StandController()
 {
-    serial_port = new QextSerialPort( ); //create serial port object
+    serial_port = new QextSerialPort; //create serial port object
     ports = new QextSerialEnumerator; //create access to all available ports
 }
 
@@ -21,4 +23,19 @@ QList<QextPortInfo> StandController::availablePorts()
     }
 
     return port_list; //return available port list
+}
+
+//set the port to use to connect to hardware controller
+void StandController::setPort( QString port_name )
+{
+    //ensure given port name is valid
+    foreach( QextPortInfo port, availablePorts() )
+    {
+        //check given port name is a valid device port
+        if( port.physName == port_name )
+        {
+            serial_port->setPortName( port_name ); //set port name
+            qDebug() << "Set Port Name = " << port_name;
+        }
+    }
 }
