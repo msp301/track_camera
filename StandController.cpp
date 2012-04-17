@@ -2,7 +2,7 @@
 
 StandController::StandController()
 {
-    serial_port = new QextSerialPort; //create serial port object
+    serial_port = new QextSerialPort( ); //create serial port object
     ports = new QextSerialEnumerator; //create access to all available ports
 }
 
@@ -14,7 +14,7 @@ QList<QextPortInfo> StandController::availablePorts()
     //check all serial ports for available supported devices
     foreach( QextPortInfo port, ports->getPorts() )
     {
-        //Arduino devices are identified by "/dev/ACM" + device number
+        //Arduino devices are identified by "/dev/ttyACM" + device number
         if( !port.physName.contains( "ACM" ) ) continue; //skip non-arduino devices
 
         port_list.push_back( port ); //add identified port to port list
