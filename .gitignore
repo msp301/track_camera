@@ -10,3 +10,5 @@ ui_*.h
 #Ignore executables
 track_camera
 
+#Ignore 3rd party libraries
+libs/qextserialport

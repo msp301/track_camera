@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+include( libs/qextserialport/src/qextserialport.pri )
+
 QT       += core gui
 
 TARGET = track_camera
@@ -28,13 +30,15 @@ SOURCES += main.cpp \
 	FaceTracking.cpp \
     VideoBuffer.cpp \
     VideoStream.cpp \
-    DisplayStream.cpp
+	DisplayStream.cpp \
+	StandController.cpp
 
 HEADERS  += Capture.hpp \
 	GuiMainWindow.hpp \
     FaceTracking.hpp \
     VideoBuffer.hpp \
     VideoStream.hpp \
-    DisplayStream.hpp
+	DisplayStream.hpp \
+	StandController.hpp
 
 FORMS    += GuiMainWindow.ui
