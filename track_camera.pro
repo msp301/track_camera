@@ -39,6 +39,7 @@ HEADERS  += Capture.hpp \
     VideoBuffer.hpp \
     VideoStream.hpp \
 	DisplayStream.hpp \
-	StandController.hpp
+	StandController.hpp \
+    Coordinate.hpp
 
 FORMS    += GuiMainWindow.ui

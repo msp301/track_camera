@@ -39,3 +39,9 @@ void StandController::setPort( QString port_name )
         }
     }
 }
+
+//send face position data to hardware controller
+void StandController::sendFaceData( vector<Coordinate> coordinates )
+{
+
+}

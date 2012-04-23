@@ -20,11 +20,11 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     video_buffer = new VideoBuffer( cap_buffer ); //create video buffer for captured frames
     video_stream = new VideoStream( video_buffer ); //create video stream handler
 
-    face_tracking = new FaceTracking( video_buffer ); //create face tracking handler
+    stand = new StandController; //create new stand control handler
+
+    face_tracking = new FaceTracking( video_buffer, stand ); //create face tracking handler
 
     video_display = new DisplayStream( video_buffer ); //create display handler
-
-    stand = new StandController; //create new stand control handler
 
     setupGui(); //setup window elements
     createConnections(); //setup UI callback connections

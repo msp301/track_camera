@@ -8,14 +8,10 @@
 
 using namespace std;
 
-struct FaceTracking::coordinate
-{
-    int x, y;
-};
-
-FaceTracking::FaceTracking( VideoBuffer *buffer )
+FaceTracking::FaceTracking( VideoBuffer *buffer, StandController *stand )
 {
     video_buffer = buffer; //store local reference to given video buffer
+    this->stand = stand; //store class accessible reference to stand controller
     haar_face_classifier_location =
             "/home/martin/src/OpenCV-2.3.1/data/haarcascades/haarcascade_frontalface_default.xml";
 
@@ -101,11 +97,11 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 }
 
 //determine central positions for each identified face
-vector<FaceTracking::coordinate> FaceTracking::getFacePositions(
+vector<Coordinate> FaceTracking::getFacePositions(
         vector<cv::Rect> faces )
 {
-    vector<FaceTracking::coordinate> coordinates;
-    FaceTracking::coordinate face_position;
+    vector<Coordinate> coordinates;
+    Coordinate face_position;
 
     //find central position of detected face areas
     foreach( cv::Rect face, faces )
