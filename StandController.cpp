@@ -1,11 +1,17 @@
 #include "StandController.hpp"
 
+#include <QByteArray>
 #include <QDebug>
 
 StandController::StandController()
 {
     serial_port = new QextSerialPort; //create serial port object
     ports = new QextSerialEnumerator; //create access to all available ports
+}
+
+StandController::~StandController()
+{
+    serial_port->close(); //close serial port
 }
 
 //access list of available supported devices
@@ -35,6 +41,8 @@ void StandController::setPort( QString port_name )
         if( port.physName == port_name )
         {
             serial_port->setPortName( port_name ); //set port name
+            serial_port->open( QIODevice::ReadWrite );
+
             qDebug() << "Set Port Name = " << port_name;
         }
     }
@@ -43,5 +51,10 @@ void StandController::setPort( QString port_name )
 //send face position data to hardware controller
 void StandController::sendFaceData( vector<Coordinate> coordinates )
 {
+    QByteArray data;
+    data.insert( 0, 'T' );
 
+    serial_port->write( data ); //send data on serial port
+
+    qDebug() << "Send '" << data.data() << "' on Port:" << serial_port->portName();
 }

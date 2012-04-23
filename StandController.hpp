@@ -14,6 +14,7 @@ class StandController
 {
     public:
         StandController();
+        ~StandController();
         QList<QextPortInfo> availablePorts();
         void setPort( QString port_name );
         void sendFaceData( vector<Coordinate> coordinates );

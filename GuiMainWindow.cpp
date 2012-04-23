@@ -38,6 +38,8 @@ GuiMainWindow::~GuiMainWindow()
 //setup GUI elements
 void GuiMainWindow::setupGui()
 {
+    ui->cmb_device->addItem( "Select Device" ); //add default entry to device list
+
     //add available devices to device list
     foreach( QextPortInfo port, stand->availablePorts() )
     {

@@ -36,13 +36,13 @@ void FaceTracking::run()
 
             if( faces.size() > 0 )
             {
-                qDebug() << "Frame Accepted";
-                getFacePositions( faces );
+                //receive and send face positions to stand controller
+                stand->sendFaceData( getFacePositions( faces ) );
+
                 if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
             }
             else
             {
-                qDebug() << "Frame Discarded";
                 if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
             }
         }
