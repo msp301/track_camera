@@ -1,5 +1,10 @@
 #include <stdlib.h>
 
+#include <Servo.h>
+
+Servo servo_x; //define servo to control x-axis movement
+Servo servo_y; //define servo to control y-axis movement
+
 //function prototypes
 char* readData( int available_data );
 
@@ -7,6 +12,10 @@ void setup()
 {
 	Serial.begin( 9600 ); //set baud rate
 	pinMode( 7, OUTPUT ); //set pin 7 as digital output
+
+	//setup servo control pins
+	servo_x.attach( 5, 544, 2500 ); //set min & max pulses to ensure 180 degree rotation
+	servo_y.attach( 6 ); //min & max pulses set to defaults (544 & 2400)
 }
 
 void loop()
@@ -22,11 +31,6 @@ void loop()
 		int x = coord[0];
 		int y = coord[1];
 
-		Serial.print( "X = " );
-		Serial.println( x, DEC );
-		Serial.print( "Y = " );
-		Serial.println( y, DEC );
-		Serial.println( "------" );
 		Serial.flush();
 	}
 }
