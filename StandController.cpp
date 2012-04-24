@@ -52,7 +52,12 @@ void StandController::setPort( QString port_name )
 void StandController::sendFaceData( vector<Coordinate> coordinates )
 {
     QByteArray data;
-    data.insert( 0, 'T' );
+
+    int x = coordinates.at( 0 ).x;
+    int y = coordinates.at( 0 ).y;
+
+    data.insert( 0, x );
+    data.insert( 1, y );
 
     serial_port->write( data ); //send data on serial port
 

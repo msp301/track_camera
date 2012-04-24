@@ -114,6 +114,12 @@ vector<Coordinate> FaceTracking::getFacePositions(
         coordinates.push_back( face_position );
     }
 
+    int i = 0;
+    foreach( Coordinate coordinate, coordinates )
+    {
+        qDebug() << "Coordinate " << i << "=" << coordinate.x << "," << coordinate.y;
+    }
+
     return coordinates;
 }
 
