@@ -58,25 +58,6 @@ void loop()
 				change = change / 200;
 				change = change * 100;
 
-				Serial.print( "Change (Minus) = " );
-				Serial.println( change, DEC );
-
-				//calculate required movement
-				angle = 180 / 100;
-				angle = angle * change;
-
-				Serial.print( "Angle (Minus) = " );
-				Serial.println( angle, DEC );
-
-				servo_x_position = servo_x_position - angle; //update x-axis servo position
-			}
-			else if( x < prev_x )
-			{
-				//calculate face position change
-				change = x + prev_x;
-				change = change / 200;
-				change = change * 100;
-
 				Serial.print( "Change (Plus) = " );
 				Serial.println( change, DEC );
 
@@ -88,6 +69,27 @@ void loop()
 				Serial.println( angle, DEC );
 
 				servo_x_position = servo_x_position + angle; //update x-axis servo position
+				if( servo_x_position > 180 ) servo_x_position = 180; //stop at max position
+			}
+			else if( x < prev_x )
+			{
+				//calculate face position change
+				change = x + prev_x;
+				change = change / 200;
+				change = change * 100;
+
+				Serial.print( "Change (Minus) = " );
+				Serial.println( change, DEC );
+
+				//calculate required movement
+				angle = 180 / 100;
+				angle = angle * change;
+
+				Serial.print( "Angle (Minus) = " );
+				Serial.println( angle, DEC );
+
+				servo_x_position = servo_x_position - angle; //update x-axis servo position
+				if( servo_x_position < 0 ) servo_x_position = 0; //stop at min position
 			}
 
 			servo_x.write( servo_x_position ); //move servo to new position
