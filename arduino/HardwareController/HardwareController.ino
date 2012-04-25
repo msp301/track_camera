@@ -53,7 +53,7 @@ void loop()
 
 			if( x > prev_x )
 			{
-				//change = ( ( x - prev_x ) / 640 ) * 100; //calculate face position change
+				//calculate face position change
 				change = x - prev_x;
 				change = change / 200;
 				change = change * 100;
@@ -61,7 +61,7 @@ void loop()
 				Serial.print( "Change (Minus) = " );
 				Serial.println( change, DEC );
 
-				//angle = ( 180 / 100 ) * change; //calculate required movement
+				//calculate required movement
 				angle = 180 / 100;
 				angle = angle * change;
 
@@ -72,7 +72,7 @@ void loop()
 			}
 			else if( x < prev_x )
 			{
-				//change = ( ( x + prev_x ) / 640 ) * 100;
+				//calculate face position change
 				change = x + prev_x;
 				change = change / 200;
 				change = change * 100;
@@ -80,7 +80,7 @@ void loop()
 				Serial.print( "Change (Plus) = " );
 				Serial.println( change, DEC );
 
-				//angle = ( 180 / 100 ) * change;
+				//calculate required movement
 				angle = 180 / 100;
 				angle = angle * change;
 
