@@ -35,7 +35,7 @@ void loop()
 	int data_size = Serial.available(); //check how much data is available
 
 	//wait for data before continuing to process
-	if( data_size == 2 )
+	if( data_size >= 2 )
 	{
 		char *coord = readData( data_size );
 
@@ -55,7 +55,7 @@ void loop()
 			{
 				//change = ( ( x - prev_x ) / 640 ) * 100; //calculate face position change
 				change = x - prev_x;
-				change = change / 640;
+				change = change / 200;
 				change = change * 100;
 
 				Serial.print( "Change (Minus) = " );
@@ -74,7 +74,7 @@ void loop()
 			{
 				//change = ( ( x + prev_x ) / 640 ) * 100;
 				change = x + prev_x;
-				change = change / 640;
+				change = change / 200;
 				change = change * 100;
 
 				Serial.print( "Change (Plus) = " );
