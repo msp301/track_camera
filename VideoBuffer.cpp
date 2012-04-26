@@ -12,6 +12,12 @@ VideoBuffer::VideoBuffer( QString name )
     buffer_name = name;
 }
 
+VideoBuffer::~VideoBuffer()
+{
+    delete mutex;
+    //delete buffer;
+}
+
 //insert frame onto end of buffer
 void VideoBuffer::add( cv::Mat frame )
 {

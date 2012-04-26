@@ -8,6 +8,11 @@ DisplayStream::DisplayStream( VideoBuffer *buffer )
     mutex = new QMutex; //create new mutex
 }
 
+DisplayStream::~DisplayStream()
+{
+    delete mutex;
+}
+
 //display video stream thread implementation
 void DisplayStream::run()
 {

@@ -14,6 +14,7 @@ class DisplayStream : public QThread
 
     public:
         DisplayStream( VideoBuffer *buffer );
+        ~DisplayStream();
         void run();
         void setVideoBuffer( VideoBuffer *buffer );
     signals:

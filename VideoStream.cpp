@@ -10,6 +10,9 @@ VideoStream::VideoStream( VideoBuffer *buffer )
 
 VideoStream::~VideoStream()
 {
+    remove(); //remove video capture interface
+
+    camera->release();
     delete camera;
 }
 
@@ -26,7 +29,7 @@ void VideoStream::start()
 void VideoStream::stop()
 {
     //pause capture thread if running
-    if( capture->isRunning() ) capture->wait();
+    if( capture->isRunning() ) capture->quit();
 }
 
 //create new capture instance
@@ -57,6 +60,7 @@ bool VideoStream::remove()
     //check whether capture interface exists before creating
     if( capture != NULL )
     {
+        if( capture->isRunning() ) capture->quit(); //stop capture thread
         delete capture; //delete capture interface instance
         capture = NULL; //set capture to empty
     }

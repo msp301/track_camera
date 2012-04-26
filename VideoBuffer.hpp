@@ -13,6 +13,7 @@ class VideoBuffer
 {
     public:
         VideoBuffer( QString name );
+        ~VideoBuffer();
         void add( cv::Mat frame );
         cv::Mat read();
         QString whoami();
