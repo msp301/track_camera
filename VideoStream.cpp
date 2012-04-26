@@ -3,7 +3,7 @@
 VideoStream::VideoStream( VideoBuffer *buffer )
 {
     video_buffer = buffer; //store video buffer location
-    camera = new cv::VideoCapture( 0 ); //create link to default camera
+    camera = new cv::VideoCapture( 1 ); //create link to default camera
     capture = NULL; //ensure capture interface is empty
     create(); //create new capture interface
 }
