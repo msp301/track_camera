@@ -11,7 +11,7 @@ int prev_x;
 int prev_y;
 
 //function prototypes
-char* readData( int available_data );
+wchar_t* readData( int available_data );
 
 void setup()
 {
@@ -37,7 +37,7 @@ void loop()
 	//wait for data before continuing to process
 	if( data_size >= 2 )
 	{
-		char *coord = readData( data_size );
+		wchar_t *coord = readData( data_size );
 
 		//convert received coordinates to integer values
 		int x = coord[0];
@@ -52,17 +52,18 @@ void loop()
 			double angle;
 
 			int is_centre = 1;
-			if( x > ( 100 + 10 ) )
+			if( x > ( 100 + 20 ) )
 			{
 				servo_x_position = servo_x_position + 5; //update x-axis servo position
 				if( servo_x_position > 180 ) servo_x_position = 180; //stop at max position
 				is_centre = 0;
 			}
-			else if( x < ( 100 - 10 ) )
+			else if( x < ( 100 - 20 ) )
 			{
 				servo_x_position = servo_x_position - 5; //update x-axis servo position
 				if( servo_x_position < 0 ) servo_x_position = 0; //stop at min position
 				is_centre = 0;
+
 			}
 
 			if( !is_centre )
@@ -82,9 +83,9 @@ void loop()
 }
 
 //read 'n' bytes of data off serial port
-char* readData( int available_data )
+wchar_t* readData( int available_data )
 {
-	char data[ available_data ];
+	wchar_t data[ available_data ];
 
 	//read given number of bytes of data off serial port
 	for( int i=0; i < available_data; i++ )
