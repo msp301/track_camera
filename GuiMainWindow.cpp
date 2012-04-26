@@ -33,6 +33,10 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 GuiMainWindow::~GuiMainWindow()
 {
 	delete ui;
+    delete face_tracking;
+    delete video_display;
+    delete video_stream;
+    delete video_buffer;
 }
 
 //setup GUI elements

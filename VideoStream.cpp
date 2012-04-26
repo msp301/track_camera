@@ -8,6 +8,11 @@ VideoStream::VideoStream( VideoBuffer *buffer )
     create(); //create new capture interface
 }
 
+VideoStream::~VideoStream()
+{
+    delete camera;
+}
+
 //start video capturing thread execution
 void VideoStream::start()
 {

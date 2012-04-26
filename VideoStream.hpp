@@ -10,6 +10,7 @@ class VideoStream
 {
     public:
         VideoStream( VideoBuffer *video_buffer );
+        ~VideoStream();
         void start();
         void stop();
         bool create();

@@ -52,12 +52,15 @@ void FaceTracking::run()
 //detect a face within a given frame//process non-empty frames only
 vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
 {
-    cv::Mat conv_frame;
-    cv::CascadeClassifier haar_face_classifier;
+    //create target frame size to resize received frame to before processing
+    cv::Mat conv_frame = cv::Mat( ( frame.rows / 4 ),
+                                  ( frame.cols / 4 ), CV_8UC2 );
+
+    cv::CascadeClassifier haar_face_classifier; //define classifier placeholder
     vector<cv::Rect> faces;
 
     //scale image to reduce processing load
-    cv::resize( frame, conv_frame, cv::Size(), 0.5, 0.5, CV_INTER_NN );
+    cv::resize( frame, conv_frame, conv_frame.size(), 0, 0, CV_INTER_NN );
 
     cv::cvtColor( conv_frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
     cv::equalizeHist( conv_frame, conv_frame );
@@ -67,7 +70,7 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     {
         //match faces of different sizes within video frame
         haar_face_classifier.detectMultiScale( conv_frame, faces, 1.1, 2,
-                                0 | CV_HAAR_SCALE_IMAGE, cv::Size( 5, 5 ) );
+                                0 | CV_HAAR_SCALE_IMAGE, cv::Size( 2, 2 ) );
 
         qDebug() << "Faces detected = " << faces.size();
     }
@@ -78,14 +81,15 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
 //display detected faces to interface
 void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 {
-    //loop through each detected face and draw a rectangle around it
+    //loop through each detected face and draw a rectangle around it,
+    //scaling back to original frame size
     foreach( cv::Rect face, faces )
     {
-        cv::Point pt1( face.x * 2, face.y * 2 ); //top-left position of face area
+        cv::Point pt1( face.x * 4, face.y * 4 ); //top-left position of face area
 
         //calculate bottom-right coordinates of face given its area
-        cv::Point pt2( ( ( ( ( face.x + face.width ) - 1 ) ) * 2 ),
-                       ( ( ( ( face.y + face.height ) - 1 ) ) * 2 ) );
+        cv::Point pt2( ( ( ( ( face.x + face.width ) - 1 ) ) * 4 ),
+                       ( ( ( ( face.y + face.height ) - 1 ) ) * 4 ) );
 
         //draw rectangle on image to specified size of face
         cv::rectangle( frame, pt1, pt2, cv::Scalar( 255, 0, 0, 0 ), 4, 8, 0 );
