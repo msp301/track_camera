@@ -11,7 +11,7 @@ int prev_x;
 int prev_y;
 
 //function prototypes
-char* readData( int available_data );
+wchar_t* readData( int available_data );
 
 void setup()
 {
@@ -37,7 +37,7 @@ void loop()
 	//wait for data before continuing to process
 	if( data_size >= 2 )
 	{
-		char *coord = readData( data_size );
+		wchar_t *coord = readData( data_size );
 
 		//convert received coordinates to integer values
 		int x = coord[0];
@@ -51,49 +51,26 @@ void loop()
 			double change;
 			double angle;
 
-			if( x > prev_x )
+			int is_centre = 1;
+			if( x > ( 100 + 20 ) )
 			{
-				//calculate face position change
-				change = x - prev_x;
-				change = change / 200;
-				change = change * 100;
-
-				Serial.print( "Change (Plus) = " );
-				Serial.println( change, DEC );
-
-				//calculate required movement
-				angle = 180 / 100;
-				angle = angle * change;
-
-				Serial.print( "Angle (Plus) = " );
-				Serial.println( angle, DEC );
-
-				servo_x_position = servo_x_position + angle; //update x-axis servo position
+				servo_x_position = servo_x_position + 5; //update x-axis servo position
 				if( servo_x_position > 180 ) servo_x_position = 180; //stop at max position
+				is_centre = 0;
 			}
-			else if( x < prev_x )
+			else if( x < ( 100 - 20 ) )
 			{
-				//calculate face position change
-				change = x + prev_x;
-				change = change / 200;
-				change = change * 100;
-
-				Serial.print( "Change (Minus) = " );
-				Serial.println( change, DEC );
-
-				//calculate required movement
-				angle = 180 / 100;
-				angle = angle * change;
-
-				Serial.print( "Angle (Minus) = " );
-				Serial.println( angle, DEC );
-
-				servo_x_position = servo_x_position - angle; //update x-axis servo position
+				servo_x_position = servo_x_position - 5; //update x-axis servo position
 				if( servo_x_position < 0 ) servo_x_position = 0; //stop at min position
+				is_centre = 0;
+
 			}
 
-			servo_x.write( servo_x_position ); //move servo to new position
-			delay( 3000 ); //wait for servo to move to new position
+			if( !is_centre )
+			{
+				servo_x.write( servo_x_position ); //move servo to new position
+				delay( 3 ); //wait for servo to move to new position
+			}
 
 			Serial.print( "Servo position = " );
 			Serial.println( servo_x_position, DEC );
@@ -106,9 +83,9 @@ void loop()
 }
 
 //read 'n' bytes of data off serial port
-char* readData( int available_data )
+wchar_t* readData( int available_data )
 {
-	char data[ available_data ];
+	wchar_t data[ available_data ];
 
 	//read given number of bytes of data off serial port
 	for( int i=0; i < available_data; i++ )
