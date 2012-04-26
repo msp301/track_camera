@@ -52,13 +52,13 @@ void loop()
 			double angle;
 
 			int is_centre = 1;
-			if( x > ( 100 + 20 ) )
+			if( x > ( 50 + 10 ) )
 			{
 				servo_x_position = servo_x_position + 5; //update x-axis servo position
 				if( servo_x_position > 180 ) servo_x_position = 180; //stop at max position
 				is_centre = 0;
 			}
-			else if( x < ( 100 - 20 ) )
+			else if( x < ( 50 - 10 ) )
 			{
 				servo_x_position = servo_x_position - 5; //update x-axis servo position
 				if( servo_x_position < 0 ) servo_x_position = 0; //stop at min position
