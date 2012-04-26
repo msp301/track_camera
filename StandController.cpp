@@ -12,6 +12,8 @@ StandController::StandController()
 StandController::~StandController()
 {
     serial_port->close(); //close serial port
+    delete serial_port;
+    delete ports;
 }
 
 //access list of available supported devices
