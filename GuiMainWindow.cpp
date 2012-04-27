@@ -73,6 +73,10 @@ void GuiMainWindow::setupTimers()
     timer_video_display = new QTimer( video_display );
     connect( timer_video_display, SIGNAL( timeout() ),
              video_display, SLOT( displayVideoFrame() ) );
+
+    timer_face_tracking = new QTimer( face_tracking );
+    connect( timer_face_tracking, SIGNAL( timeout() ),
+             face_tracking, SLOT( trackFaces() ) );
 }
 
 //create all required connections between GUI elements
@@ -115,7 +119,7 @@ void GuiMainWindow::createMenuConnections()
 void GuiMainWindow::displayVideo()
 {
     video_stream->start(); //start video stream
-    face_tracking->start(); //start tracking faces
+    timer_face_tracking->start( 60 ); //start scheduling face tracking
     timer_video_display->start( 60 ); //start scheduling video buffer
 }
 

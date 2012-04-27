@@ -23,6 +23,8 @@ class FaceTracking : public QThread, public SafeThread
         void run();
         void toggleDisplayDetectedFaces();
         bool showDetectedFaces();
+    public slots:
+        void trackFaces();
     private:
         VideoBuffer *video_buffer;
         StandController *stand;

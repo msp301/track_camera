@@ -27,37 +27,34 @@ FaceTracking::~FaceTracking()
 
 void FaceTracking::run()
 {
-    vector<cv::Rect> faces;
-
-    //class thread implementation
-
-    //check thread has not been scheduled to be stopped
-    while( !isStopped() )
-    {
-        msleep( 60 );
-        cv::Mat frame = video_buffer->read(); //read frame from video buffer
-
-        //process only non-empty frames
-        if( !frame.empty() )
-        {
-            faces = detectFace( frame );
-
-            if( faces.size() > 0 )
-            {
-                //receive and send face positions to stand controller
-                stand->sendFaceData( getFacePositions( faces ) );
-
-                if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
-            }
-            else
-            {
-                if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
-            }
-        }
-    }
-
     qDebug() << "FaceTracking: About to enter exec()";
     exec(); //enter thread wait routine
+}
+
+//identify faces and determine their positions
+void FaceTracking::trackFaces()
+{
+    vector<cv::Rect> faces;
+
+    cv::Mat frame = video_buffer->read(); //read frame from video buffer
+
+    //process only non-empty frames
+    if( !frame.empty() )
+    {
+        faces = detectFace( frame );
+
+        if( faces.size() > 0 )
+        {
+            //receive and send face positions to stand controller
+            stand->sendFaceData( getFacePositions( faces ) );
+
+            if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
+        }
+        else
+        {
+            if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
+        }
+    }
 }
 
 //detect a face within a given frame//process non-empty frames only

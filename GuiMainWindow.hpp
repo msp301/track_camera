@@ -39,6 +39,7 @@ class GuiMainWindow : public QMainWindow
         FaceTracking *face_tracking;
         StandController *stand;
         QTimer *timer_video_display;
+        QTimer *timer_face_tracking;
 
     public slots:
         void displayVideo();
