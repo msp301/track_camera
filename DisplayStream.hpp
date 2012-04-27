@@ -9,7 +9,7 @@
 
 #include <opencv2/core/core.hpp>
 
-class DisplayStream : public QThread, public SafeThread
+class DisplayStream : public QThread
 {
     Q_OBJECT
 
@@ -18,6 +18,8 @@ class DisplayStream : public QThread, public SafeThread
         ~DisplayStream();
         void run();
         void setVideoBuffer( VideoBuffer *buffer );
+    public slots:
+        void displayVideoFrame();
     signals:
         void frameReady( cv::Mat frame );
     private:

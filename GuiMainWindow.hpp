@@ -27,6 +27,7 @@ class GuiMainWindow : public QMainWindow
 		
     private:
         void setupGui();
+        void setupTimers();
         void createConnections();
         void createMenuConnections();
 
@@ -37,7 +38,7 @@ class GuiMainWindow : public QMainWindow
         DisplayStream *video_display;
         FaceTracking *face_tracking;
         StandController *stand;
-        QTimer *timer_capture;
+        QTimer *timer_video_display;
 
     public slots:
         void displayVideo();

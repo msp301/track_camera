@@ -27,32 +27,30 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
     video_display = new DisplayStream( video_buffer ); //create display handler
 
     setupGui(); //setup window elements
+    setupTimers();
     createConnections(); //setup UI callback connections
 }
 
 GuiMainWindow::~GuiMainWindow()
 {
-    video_display->stopThread();
-    face_tracking->stopThread();
+    //video_display->stopThread();
+    //face_tracking->stopThread();
     //while( !video_display->isStopped() );
-    if( video_display->isStopped() ) qDebug() << "Stopped Video Display";
+    //if( video_display->isStopped() ) qDebug() << "Stopped Video Display";
 
     //delete video_display;
     //while( !face_tracking->isStopped() );
-    if( face_tracking->isStopped() ) qDebug() << "Stopped Face Tracking";
+    //if( face_tracking->isStopped() ) qDebug() << "Stopped Face Tracking";
 
-    //delete face_tracking;
-    //video_display->deleteLater(); //schedule display for deletion
-    //face_tracking->deleteLater(); //schedule face tracking for deletion
     delete video_stream;
     delete video_buffer;
     delete stand;
 
-    video_display->quit();
-    face_tracking->quit();
+    //video_display->quit();
+    //face_tracking->quit();
 
     delete video_display;
-    delete face_tracking;
+    //delete face_tracking;
 
     delete ui;
 }
@@ -67,6 +65,14 @@ void GuiMainWindow::setupGui()
     {
         ui->cmb_device->addItem( port.physName ); //add device to combo box
     }
+}
+
+//setup event timers
+void GuiMainWindow::setupTimers()
+{
+    timer_video_display = new QTimer( video_display );
+    connect( timer_video_display, SIGNAL( timeout() ),
+             video_display, SLOT( displayVideoFrame() ) );
 }
 
 //create all required connections between GUI elements
@@ -110,7 +116,7 @@ void GuiMainWindow::displayVideo()
 {
     video_stream->start(); //start video stream
     face_tracking->start(); //start tracking faces
-    video_display->start(); //start reading from video buffer
+    timer_video_display->start( 60 ); //start scheduling video buffer
 }
 
 //display video frame to interface
