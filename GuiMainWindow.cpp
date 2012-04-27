@@ -119,8 +119,8 @@ void GuiMainWindow::createMenuConnections()
 void GuiMainWindow::displayVideo()
 {
     video_stream->start(); //start video stream
-    timer_face_tracking->start( 60 ); //start scheduling face tracking
-    timer_video_display->start( 60 ); //start scheduling video buffer
+    timer_face_tracking->start( 250 ); //start scheduling face tracking
+    timer_video_display->start( 250 ); //start scheduling video buffer
 }
 
 //display video frame to interface
