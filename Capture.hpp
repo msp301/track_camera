@@ -9,15 +9,17 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-class Capture : public QThread, public SafeThread
+class Capture : public QThread
 {
+    Q_OBJECT
+
     public:
         Capture( cv::VideoCapture *camera, VideoBuffer *buffer );
         ~Capture();
         void run();
         cv::Mat grabFrame();
     public slots:
-        void stopThread();
+        void captureFrame();
     private:
         cv::Mat frame;
         cv::VideoCapture *capture;

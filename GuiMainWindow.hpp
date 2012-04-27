@@ -9,6 +9,7 @@
 #include "StandController.hpp"
 
 #include <QMainWindow>
+#include <QTimer>
 
 #include <opencv2/core/core.hpp>
 
@@ -36,6 +37,7 @@ class GuiMainWindow : public QMainWindow
         DisplayStream *video_display;
         FaceTracking *face_tracking;
         StandController *stand;
+        QTimer *timer_capture;
 
     public slots:
         void displayVideo();

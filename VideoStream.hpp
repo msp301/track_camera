@@ -4,10 +4,15 @@
 #include <Capture.hpp>
 #include <VideoBuffer.hpp>
 
+#include <QObject>
+#include <QTimer>
+
 #include <opencv2/highgui/highgui.hpp>
 
-class VideoStream
+class VideoStream : public QObject
 {
+    Q_OBJECT
+
     public:
         VideoStream( VideoBuffer *video_buffer );
         ~VideoStream();
@@ -19,6 +24,7 @@ class VideoStream
         Capture *capture;
         VideoBuffer *video_buffer;
         cv::VideoCapture *camera;
+        QTimer *timer_capture;
 };
 
 #endif // VIDEOSTREAM_HPP

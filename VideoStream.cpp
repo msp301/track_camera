@@ -40,6 +40,11 @@ bool VideoStream::create()
     {
         //setup capture from camera that will be output to a video buffer
         capture = new Capture( camera, video_buffer );
+
+        timer_capture = new QTimer( capture ); //setup capture event timer
+        connect( timer_capture, SIGNAL( timeout() ),
+                 capture, SLOT( captureFrame() ) );
+        timer_capture->start( 60 ); //execute capture every 60ms
     }
     else
     {

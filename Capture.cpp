@@ -18,20 +18,6 @@ Capture::~Capture()
 //thread implementation to start video stream capturing
 void Capture::run()
 {
-    //check thread has not been scheduled to be stopped
-    while( !isStopped() )
-    {
-        cv::Mat frame = grabFrame(); //grab frame from video device
-
-        //do not write empty frames to video buffer
-        if( !frame.empty() )
-        {
-            video_buffer->add( frame ); //add frame to video buffer
-        }
-
-        msleep( 60 );
-    }
-
     qDebug() << "Capture: About to enter exec()";
     exec(); //enter thread wait routine
 }
@@ -46,3 +32,14 @@ cv::Mat Capture::grabFrame()
     return frame;
 }
 
+//capture video frame
+void Capture::captureFrame()
+{
+    cv::Mat frame = grabFrame(); //grab frame from video device
+
+    //do not write empty frames to video buffer
+    if( !frame.empty() )
+    {
+        video_buffer->add( frame ); //add frame to video buffer
+    }
+}
