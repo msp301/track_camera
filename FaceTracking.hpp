@@ -13,12 +13,13 @@
 
 #include <opencv2/core/core.hpp>
 
-class FaceTracking : public QThread
+class FaceTracking : public QThread, public SafeThread
 {
     Q_OBJECT
 
     public:
         FaceTracking( VideoBuffer *buffer, StandController *stand );
+        ~FaceTracking();
         void run();
         void toggleDisplayDetectedFaces();
         bool showDetectedFaces();

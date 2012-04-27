@@ -10,13 +10,13 @@ DisplayStream::DisplayStream( VideoBuffer *buffer )
 
 DisplayStream::~DisplayStream()
 {
-    delete mutex;
+    this->quit(); //stop thread execution
 }
 
 //display video stream thread implementation
 void DisplayStream::run()
 {
-    while( true )
+    while( !isStopped() )
     {
         msleep( 60 );
 
@@ -28,6 +28,9 @@ void DisplayStream::run()
         //ensure retrieved frame contains some data before signalling to UI
         if( !frame.empty() ) emit( frameReady( frame ) );
     }
+
+    qDebug() << "DisplayStream: Stopping Thread";
+    exec(); //enter thread wait routine
 }
 
 //change the input video buffer to read frames from

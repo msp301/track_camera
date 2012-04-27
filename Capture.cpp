@@ -1,5 +1,7 @@
 #include "Capture.hpp"
 
+#include <QDebug>
+
 #include <opencv2/imgproc/imgproc.hpp>
 
 Capture::Capture( cv::VideoCapture *camera, VideoBuffer *buffer )
@@ -10,13 +12,14 @@ Capture::Capture( cv::VideoCapture *camera, VideoBuffer *buffer )
 
 Capture::~Capture()
 {
-    capture->release(); //disconnect camera before closing program
+    this->quit(); //quit thread
 }
 
 //thread implementation to start video stream capturing
 void Capture::run()
 {
-    while( true )
+    //check thread has not been scheduled to be stopped
+    while( !isStopped() )
     {
         cv::Mat frame = grabFrame(); //grab frame from video device
 
@@ -28,6 +31,9 @@ void Capture::run()
 
         msleep( 60 );
     }
+
+    qDebug() << "Capture: About to enter exec()";
+    exec(); //enter thread wait routine
 }
 
 //grab current frame from input capture device
@@ -39,5 +45,4 @@ cv::Mat Capture::grabFrame()
 
     return frame;
 }
-
 

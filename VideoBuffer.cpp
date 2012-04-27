@@ -15,7 +15,7 @@ VideoBuffer::VideoBuffer( QString name )
 VideoBuffer::~VideoBuffer()
 {
     delete mutex;
-    //delete buffer;
+    buffer->release();
 }
 
 //insert frame onto end of buffer

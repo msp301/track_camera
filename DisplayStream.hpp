@@ -2,13 +2,14 @@
 #define DISPLAYSTREAM_HPP
 
 #include "VideoBuffer.hpp"
+#include "SafeThread.hpp"
 
 #include <QThread>
 #include <QMutex>
 
 #include <opencv2/core/core.hpp>
 
-class DisplayStream : public QThread
+class DisplayStream : public QThread, public SafeThread
 {
     Q_OBJECT
 

@@ -32,13 +32,28 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) :
 
 GuiMainWindow::~GuiMainWindow()
 {
-    delete stand;
-    //delete face_tracking;
+    video_display->stopThread();
+    face_tracking->stopThread();
+    //while( !video_display->isStopped() );
+    if( video_display->isStopped() ) qDebug() << "Stopped Video Display";
+
     //delete video_display;
+    //while( !face_tracking->isStopped() );
+    if( face_tracking->isStopped() ) qDebug() << "Stopped Face Tracking";
+
+    //delete face_tracking;
+    //video_display->deleteLater(); //schedule display for deletion
+    //face_tracking->deleteLater(); //schedule face tracking for deletion
     delete video_stream;
-    video_display->deleteLater();
-    face_tracking->deleteLater();
     delete video_buffer;
+    delete stand;
+
+    video_display->quit();
+    face_tracking->quit();
+
+    delete video_display;
+    delete face_tracking;
+
     delete ui;
 }
 

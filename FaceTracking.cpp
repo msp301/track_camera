@@ -19,12 +19,20 @@ FaceTracking::FaceTracking( VideoBuffer *buffer, StandController *stand )
     mutex = new QMutex;
 }
 
+FaceTracking::~FaceTracking()
+{
+    this->quit(); //stop thread execution
+    delete mutex;
+}
+
 void FaceTracking::run()
 {
     vector<cv::Rect> faces;
 
     //class thread implementation
-    while( true )
+
+    //check thread has not been scheduled to be stopped
+    while( !isStopped() )
     {
         msleep( 60 );
         cv::Mat frame = video_buffer->read(); //read frame from video buffer
@@ -47,6 +55,9 @@ void FaceTracking::run()
             }
         }
     }
+
+    qDebug() << "FaceTracking: About to enter exec()";
+    exec(); //enter thread wait routine
 }
 
 //detect a face within a given frame//process non-empty frames only
