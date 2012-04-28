@@ -16,7 +16,6 @@ DisplayStream::~DisplayStream()
 //display video stream thread implementation
 void DisplayStream::run()
 {
-    qDebug() << "DisplayStream: Stopping Thread";
     exec(); //enter thread wait routine
 }
 
@@ -24,7 +23,6 @@ void DisplayStream::run()
 void DisplayStream::setVideoBuffer( VideoBuffer *buffer )
 {
     mutex->lock();
-    //qDebug() << "Setting buffer to:" << buffer->whoami();
     video_buffer = buffer; //change video stream reference
     mutex->unlock();
 }
@@ -33,7 +31,6 @@ void DisplayStream::setVideoBuffer( VideoBuffer *buffer )
 void DisplayStream::displayVideoFrame()
 {
     mutex->lock();
-    //qDebug() << "DisplayStream: Reading from: " << video_buffer->whoami();
     cv::Mat frame = video_buffer->read(); //read frame from video buffer
     mutex->unlock();
 

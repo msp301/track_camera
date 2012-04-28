@@ -18,7 +18,6 @@ Capture::~Capture()
 //thread implementation to start video stream capturing
 void Capture::run()
 {
-    qDebug() << "Capture: About to enter exec()";
     exec(); //enter thread wait routine
 }
 

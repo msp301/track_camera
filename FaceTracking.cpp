@@ -27,7 +27,6 @@ FaceTracking::~FaceTracking()
 
 void FaceTracking::run()
 {
-    qDebug() << "FaceTracking: About to enter exec()";
     exec(); //enter thread wait routine
 }
 
