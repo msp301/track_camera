@@ -2,7 +2,6 @@
 #define CAPTURE_HPP
 
 #include "VideoBuffer.hpp"
-#include "SafeThread.hpp"
 
 #include <QThread>
 

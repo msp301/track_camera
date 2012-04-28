@@ -31,8 +31,7 @@ SOURCES += main.cpp \
     VideoBuffer.cpp \
     VideoStream.cpp \
 	DisplayStream.cpp \
-	StandController.cpp \
-    SafeThread.cpp
+	StandController.cpp
 
 HEADERS  += Capture.hpp \
 	GuiMainWindow.hpp \
@@ -41,7 +40,6 @@ HEADERS  += Capture.hpp \
     VideoStream.hpp \
 	DisplayStream.hpp \
 	StandController.hpp \
-    Coordinate.hpp \
-    SafeThread.hpp
+	Coordinate.hpp
 
 FORMS    += GuiMainWindow.ui

@@ -13,7 +13,7 @@
 
 #include <opencv2/core/core.hpp>
 
-class FaceTracking : public QThread, public SafeThread
+class FaceTracking : public QThread
 {
     Q_OBJECT
 
