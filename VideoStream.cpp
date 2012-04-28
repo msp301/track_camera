@@ -64,7 +64,6 @@ bool VideoStream::remove()
     if( capture != NULL )
     {
         if( capture->isRunning() ) capture->quit(); //stop capture thread
-        //capture->stopThread(); //stop capture thread
         capture = NULL; //set capture to empty
     }
     else
