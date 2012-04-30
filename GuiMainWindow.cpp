@@ -18,7 +18,7 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent)
     video_display = new DisplayStream( video_buffer ); //create display handler
 
     setupGui(); //setup window elements
-    setupTimers();
+    setupTimers(); //setup event timers
     createConnections(); //setup UI callback connections
 }
 
@@ -34,7 +34,6 @@ GuiMainWindow::~GuiMainWindow()
 //setup GUI elements
 void GuiMainWindow::setupGui()
 {
-    //main_window = new QMainWindow(); //create main window
     content = new QWidget; //create window contents widget
     setWindowTitle( "Track Camera" ); //set window title
 
