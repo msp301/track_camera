@@ -1,20 +1,11 @@
 #include "GuiMainWindow.hpp"
-#include "ui_GuiMainWindow.h"
-
-#include <QtGui>
 
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <QDebug>
 
-GuiMainWindow::GuiMainWindow(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::GuiMainWindow)
+GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    ui->setupUi(this);
-
-    setWindowTitle( "Track Camera" );
-
     QString cap_buffer( "capture" );
 
     video_buffer = new VideoBuffer( cap_buffer ); //create video buffer for captured frames
@@ -38,19 +29,60 @@ GuiMainWindow::~GuiMainWindow()
     delete stand;
     delete video_display;
     delete face_tracking;
-    delete ui;
 }
 
 //setup GUI elements
 void GuiMainWindow::setupGui()
 {
-    ui->cmb_device->addItem( "Select Device" ); //add default entry to device list
+    //main_window = new QMainWindow(); //create main window
+    content = new QWidget; //create window contents widget
+    setWindowTitle( "Track Camera" ); //set window title
 
-    //add available devices to device list
+    //create required layouts
+    v_layout = new QVBoxLayout; //top-level vertical box layout
+    h_layout = new QHBoxLayout; //horizontal layout for controls
+
+    //create "Camera" menu
+    menu_camera = new QMenu( "Camera" );
+    action_start = new QAction( "Start", menu_camera );
+    action_quit = new QAction( "Quit", menu_camera );
+    menu_camera->addAction( action_start );
+    menu_camera->addSeparator();
+    menu_camera->addAction( action_quit );
+    menuBar()->addMenu( menu_camera );
+
+    //create "Edit" menu
+    menu_edit = new QMenu( "Edit" ); //create edit menu
+    action_show_faces = new QAction( "Show Faces", menu_edit );
+    menu_edit->addAction( action_show_faces );
+    menuBar()->addMenu( menu_edit );
+
+    //create stand controller and camera selection controls
+    cmb_camera_select = new QComboBox;
+    cmb_device_select = new QComboBox;
+
+    cmb_camera_select->addItem( "Select Camera" ); //add default entry to camera list
+
+    //populate stand controller device selection
+    cmb_device_select->addItem( "Select Device" ); //add default entry to device list
     foreach( QextPortInfo port, stand->availablePorts() )
     {
-        ui->cmb_device->addItem( port.physName ); //add device to combo box
+        cmb_device_select->addItem( port.physName ); //add device to combo box
     }
+
+    //add control widgets to horizontal control layout
+    h_layout->addWidget( cmb_camera_select );
+    h_layout->addWidget( cmb_device_select );
+
+    v_layout->addLayout( h_layout ); //add controls to top-level layout
+
+    //create video output label & add to top-level layout
+    lbl_camera_output = new QLabel( "Camera Output" );
+    v_layout->addWidget( lbl_camera_output );
+
+    content->setLayout( v_layout ); //apply created layout to window
+
+    setCentralWidget( content ); //add content to window
 }
 
 //setup event timers
@@ -78,7 +110,7 @@ void GuiMainWindow::createConnections()
              this, SLOT( displayFrame( cv::Mat ) ) );
 
     //connect device combo box to selection of stand controller
-    connect( ui->cmb_device, SIGNAL( currentIndexChanged( QString ) ),
+    connect( cmb_device_select, SIGNAL( currentIndexChanged( QString ) ),
              this, SLOT( setDevice( QString ) ) );
 }
 
@@ -88,16 +120,16 @@ void GuiMainWindow::createMenuConnections()
     // ----- Camera menu -----
 
     //Camera > Start = start video
-    connect( ui->actionStart, SIGNAL( triggered() ),
+    connect( action_start, SIGNAL( triggered() ),
              this, SLOT( displayVideo() ) );
 
     //Camera > Quit = exit application
-    connect( ui->actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
+    connect( action_quit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
 
     // ----- Edit menu -----
 
     //Edit > Show Faces = display face identification
-    connect( ui->actionShow_Faces, SIGNAL( triggered() ),
+    connect( action_show_faces, SIGNAL( triggered() ),
              this, SLOT( toggleDisplayFaces() ) );
 }
 
@@ -107,7 +139,7 @@ void GuiMainWindow::displayVideo()
     //check whether video output is being displayed
     if( !timer_video_display->isActive() )
     {
-        ui->actionStart->setText( "Stop" ); //set UI menu text
+        action_start->setText( "Stop" ); //set UI menu text
 
         video_stream->start(); //start video stream
         timer_face_tracking->start( 250 ); //start scheduling face tracking
@@ -115,7 +147,7 @@ void GuiMainWindow::displayVideo()
     }
     else
     {
-        ui->actionStart->setText( "Start" ); //set UI menu text
+        action_start->setText( "Start" ); //set UI menu text
 
         video_stream->stop(); //stop video stream
         timer_face_tracking->stop(); //stop scheduling face tracking
@@ -134,7 +166,7 @@ void GuiMainWindow::displayFrame( cv::Mat frame )
                   conv_frame.rows, QImage::Format_RGB888 );
 
     //display converted frame to UI label
-    ui->lbl_camera_output->setPixmap( QPixmap::fromImage( image ) );
+    lbl_camera_output->setPixmap( QPixmap::fromImage( image ) );
 }
 
 //change video buffer to be used as output
@@ -143,11 +175,11 @@ void GuiMainWindow::toggleDisplayFaces()
     //set menu item text appropriate to request
     if( face_tracking->showDetectedFaces() )
     {
-        ui->actionShow_Faces->setText( "Show Faces" );
+        action_show_faces->setText( "Show Faces" );
     }
     else
     {
-        ui->actionShow_Faces->setText( "Hide Faces" );
+        action_show_faces->setText( "Hide Faces" );
     }
 
     //toggle whether to display detected faces or not

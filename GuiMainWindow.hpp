@@ -8,21 +8,17 @@
 #include "FaceTracking.hpp"
 #include "StandController.hpp"
 
-#include <QMainWindow>
+#include <QtGui>
 #include <QTimer>
 
 #include <opencv2/core/core.hpp>
-
-namespace Ui {
-	class GuiMainWindow;
-}
 
 class GuiMainWindow : public QMainWindow
 {
     Q_OBJECT
 		
 	public:
-		explicit GuiMainWindow(QWidget *parent = 0);
+        explicit GuiMainWindow(QWidget *parent = 0);
 		~GuiMainWindow();
 		
     private:
@@ -31,7 +27,6 @@ class GuiMainWindow : public QMainWindow
         void createConnections();
         void createMenuConnections();
 
-		Ui::GuiMainWindow *ui;
         Capture *capture;
         VideoBuffer *video_buffer;
         VideoStream *video_stream;
@@ -40,6 +35,20 @@ class GuiMainWindow : public QMainWindow
         StandController *stand;
         QTimer *timer_video_display;
         QTimer *timer_face_tracking;
+
+        QMainWindow *main_window;
+        QWidget *content;
+        QVBoxLayout *v_layout;
+        QHBoxLayout *h_layout;
+        QMenu *menu_camera;
+        QMenu *menu_edit;
+        QComboBox *cmb_camera_select;
+        QComboBox *cmb_device_select;
+        QLabel *lbl_camera_output;
+
+        QAction *action_start;
+        QAction *action_quit;
+        QAction *action_show_faces;
 
     public slots:
         void displayVideo();
