@@ -104,9 +104,23 @@ void GuiMainWindow::createMenuConnections()
 //start reading video output stream
 void GuiMainWindow::displayVideo()
 {
-    video_stream->start(); //start video stream
-    timer_face_tracking->start( 250 ); //start scheduling face tracking
-    timer_video_display->start( 250 ); //start scheduling video buffer
+    //check whether video output is being displayed
+    if( !timer_video_display->isActive() )
+    {
+        ui->actionStart->setText( "Stop" ); //set UI menu text
+
+        video_stream->start(); //start video stream
+        timer_face_tracking->start( 250 ); //start scheduling face tracking
+        timer_video_display->start( 250 ); //start scheduling video buffer
+    }
+    else
+    {
+        ui->actionStart->setText( "Start" ); //set UI menu text
+
+        video_stream->stop(); //stop video stream
+        timer_face_tracking->stop(); //stop scheduling face tracking
+        timer_video_display->stop(); //stop scheduling video buffer
+    }
 }
 
 //display video frame to interface
