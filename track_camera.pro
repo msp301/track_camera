@@ -41,5 +41,3 @@ HEADERS  += Capture.hpp \
 	DisplayStream.hpp \
 	StandController.hpp \
 	Coordinate.hpp
-
-FORMS    += GuiMainWindow.ui
