@@ -53,3 +53,21 @@ const char* VideoDevice::getDeviceName( const char *device_path )
 
     return device_name;
 }
+
+//retrieve '/dev' file location of connected camera
+const char* VideoDevice::getDeviceFile( const char *device_path )
+{
+    const char *file_name;
+
+    struct udev *udev = udev_new(); //create new udev object
+    struct udev_device *camera;
+
+    //retrieve camera details from identified device
+    camera = udev_device_new_from_syspath( udev, device_path );
+
+    //get 'DEVNAME' property from device
+    file_name = udev_device_get_property_value( camera, "DEVNAME" );
+    qDebug() << "VideoDevice: Device File = " << file_name;
+
+    return file_name;
+}
