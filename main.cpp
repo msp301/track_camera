@@ -1,8 +1,6 @@
 #include <QtGui/QApplication>
 #include "GuiMainWindow.hpp"
 
-#include "StandController.hpp"
-
 int main(int argc, char *argv[])
 {
     QApplication app( argc, argv ); //create new Qt application container
