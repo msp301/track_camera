@@ -20,6 +20,7 @@ class VideoStream : public QObject
         void stop();
         bool create();
         bool remove();
+        void setCamera( int camera_no );
     private:
         Capture *capture;
         VideoBuffer *video_buffer;

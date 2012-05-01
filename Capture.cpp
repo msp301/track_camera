@@ -26,7 +26,8 @@ cv::Mat Capture::grabFrame()
 {
     cv::Mat frame;
 
-    capture->operator >>( frame ); //capture frame from video device
+    //capture frame from video device, only if it exists
+    if( capture ) capture->operator >>( frame );
 
     return frame;
 }

@@ -3,6 +3,7 @@
 
 #include "Capture.hpp"
 #include "VideoBuffer.hpp"
+#include "VideoDevice.hpp"
 #include "VideoStream.hpp"
 #include "DisplayStream.hpp"
 #include "FaceTracking.hpp"
@@ -29,6 +30,7 @@ class GuiMainWindow : public QMainWindow
 
         Capture *capture;
         VideoBuffer *video_buffer;
+        VideoDevice *video_device;
         VideoStream *video_stream;
         DisplayStream *video_display;
         FaceTracking *face_tracking;
@@ -55,6 +57,7 @@ class GuiMainWindow : public QMainWindow
         void displayFrame( cv::Mat frame );
         void toggleDisplayFaces();
         void setDevice( QString device_name );
+        void setCamera( QString camera_name );
 };
 
 #endif // GUIMAINWINDOW_HPP

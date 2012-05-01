@@ -3,7 +3,7 @@
 VideoStream::VideoStream( VideoBuffer *buffer )
 {
     video_buffer = buffer; //store video buffer location
-    camera = new cv::VideoCapture( 1 ); //create link to default camera
+    camera = new cv::VideoCapture( 0 ); //create link to default camera
     capture = NULL; //ensure capture interface is empty
     create(); //create new capture interface
 }
@@ -73,4 +73,18 @@ bool VideoStream::remove()
     }
 
     return success;
+}
+
+//set camera device
+void VideoStream::setCamera( int camera_no )
+{
+    if( capture != NULL ) stop(); //stop any running video capture
+    remove(); //remove link to capture task
+    delete capture; //remove capture task
+
+    if( camera->isOpened() ) camera->release(); //release any connected camera
+    delete camera; //remove camera instance
+
+    camera = new cv::VideoCapture( camera_no ); //setup new camera
+    create(); //create new capture interface
 }

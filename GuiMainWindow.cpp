@@ -9,6 +9,8 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent)
     QString cap_buffer( "capture" );
 
     video_buffer = new VideoBuffer( cap_buffer ); //create video buffer for captured frames
+    video_device = new VideoDevice();
+    video_device->getDeviceNumber( video_device->getDeviceList().at( 0 ) );
     video_stream = new VideoStream( video_buffer ); //create video stream handler
 
     stand = new StandController; //create new stand control handler
@@ -61,6 +63,14 @@ void GuiMainWindow::setupGui()
     cmb_device_select = new QComboBox;
 
     cmb_camera_select->addItem( "Select Camera" ); //add default entry to camera list
+    foreach( string device, video_device->getDeviceList() )
+    {
+        QString name = video_device->getDeviceName( device ).c_str();
+        QString location = video_device->getDeviceFile( device ).c_str();
+
+        name.append( " - " + location ); //append device name with its location
+        cmb_camera_select->addItem( name ); //add camera entry to combo box
+    }
 
     //populate stand controller device selection
     cmb_device_select->addItem( "Select Device" ); //add default entry to device list
@@ -111,6 +121,10 @@ void GuiMainWindow::createConnections()
     //connect device combo box to selection of stand controller
     connect( cmb_device_select, SIGNAL( currentIndexChanged( QString ) ),
              this, SLOT( setDevice( QString ) ) );
+
+    //connect camera combo box to selection of camera device
+    connect( cmb_camera_select, SIGNAL( currentIndexChanged( QString ) ),
+             this, SLOT( setCamera( QString ) ) );
 }
 
 //create required connections for menu actions
@@ -158,14 +172,19 @@ void GuiMainWindow::displayVideo()
 void GuiMainWindow::displayFrame( cv::Mat frame )
 {
     cv::Mat conv_frame;
-    cv::cvtColor( frame, conv_frame, CV_BGR2RGB ); //convert to RGB colour
 
-    //create new QImage from OpenCV matrix format
-    QImage image( ( uchar* ) conv_frame.data, conv_frame.cols,
-                  conv_frame.rows, QImage::Format_RGB888 );
+    //ensure we have received a valid video frame before displaying
+    if( !frame.empty() )
+    {
+        cv::cvtColor( frame, conv_frame, CV_BGR2RGB ); //convert to RGB colour
 
-    //display converted frame to UI label
-    lbl_camera_output->setPixmap( QPixmap::fromImage( image ) );
+        //create new QImage from OpenCV matrix format
+        QImage image( ( uchar* ) conv_frame.data, conv_frame.cols,
+                      conv_frame.rows, QImage::Format_RGB888 );
+
+        //display converted frame to UI label
+        lbl_camera_output->setPixmap( QPixmap::fromImage( image ) );
+    }
 }
 
 //change video buffer to be used as output
@@ -190,4 +209,31 @@ void GuiMainWindow::setDevice( QString device_name )
 {
     qDebug() << "About to Set Device";
     stand->setPort( device_name ); //set stand device
+}
+
+//set camera device
+void GuiMainWindow::setCamera( QString camera_name )
+{
+    //extract device file path from selected camera name
+    camera_name = camera_name.split( "-" ).back().trimmed();
+
+    //retrieve system location of selected camera device
+    string camera = video_device->deviceFileToPath( camera_name.toStdString() );
+
+    //if video display has already started, stop video
+    if( timer_video_display->isActive() )
+    {
+        displayVideo(); //toggle video display
+
+        //retrieve camera device number and set video stream to use that device
+        video_stream->setCamera( video_device->getDeviceNumber( camera ) );
+
+        displayVideo(); //toggle video display
+    }
+    else
+    {
+        //retrieve camera device number and set video stream to use that device
+        video_stream->setCamera( video_device->getDeviceNumber( camera ) );
+    }
+
 }

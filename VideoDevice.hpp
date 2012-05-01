@@ -3,6 +3,7 @@
 
 #include <libudev.h>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -10,10 +11,11 @@ class VideoDevice
 {
     public:
         VideoDevice();
-        vector<const char*> getDeviceList();
-        const char* getDeviceName( const char *device_path );
-        const char* getDeviceFile( const char *device_path );
-        int getDeviceNumber( const char *device_path );
+        vector<string> getDeviceList();
+        string getDeviceName( string device_path );
+        string getDeviceFile( string device_path );
+        int getDeviceNumber( string device_path );
+        string deviceFileToPath( string device_file );
 };
 
 #endif // VIDEODEVICE_HPP
