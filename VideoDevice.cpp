@@ -1,5 +1,7 @@
 #include "VideoDevice.hpp"
 
+#include <string>
+
 #include <QDebug>
 
 VideoDevice::VideoDevice()
@@ -70,4 +72,20 @@ const char* VideoDevice::getDeviceFile( const char *device_path )
     qDebug() << "VideoDevice: Device File = " << file_name;
 
     return file_name;
+}
+
+//retrieve number of device, based on its location in '/dev'
+int VideoDevice::getDeviceNumber( const char *device_path )
+{
+    int device_num;
+    string file_name = getDeviceFile( device_path );
+    size_t position;
+
+    //find position of device number in device's file name
+    position = file_name.find_first_of( "0123456789", position );
+    device_num = file_name.at( position ) - 48; //convert to integer
+
+    qDebug() << "Retrieved Device Number = " << device_num;
+
+    return device_num;
 }

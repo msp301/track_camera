@@ -13,6 +13,7 @@ class VideoDevice
         vector<const char*> getDeviceList();
         const char* getDeviceName( const char *device_path );
         const char* getDeviceFile( const char *device_path );
+        int getDeviceNumber( const char *device_path );
 };
 
 #endif // VIDEODEVICE_HPP
