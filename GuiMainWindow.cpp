@@ -224,6 +224,7 @@ void GuiMainWindow::setCamera( QString camera_name )
     if( timer_video_display->isActive() )
     {
         displayVideo(); //toggle video display
+        for( int i=-0; i < 20000; i++ ); //wait for tasks to stop properly
 
         //retrieve camera device number and set video stream to use that device
         video_stream->setCamera( video_device->getDeviceNumber( camera ) );
