@@ -11,7 +11,8 @@ QT       += core gui
 TARGET = track_camera
 TEMPLATE = app
 
-LIBS += -L/usr/local/lib \
+LIBS += -ludev \
+	-L/usr/local/lib \
 	-lopencv_core \
 	-lopencv_imgproc \
 	-lopencv_highgui \
@@ -31,7 +32,8 @@ SOURCES += main.cpp \
     VideoBuffer.cpp \
     VideoStream.cpp \
 	DisplayStream.cpp \
-	StandController.cpp
+	StandController.cpp \
+    VideoDevice.cpp
 
 HEADERS  += Capture.hpp \
 	GuiMainWindow.hpp \
@@ -40,4 +42,5 @@ HEADERS  += Capture.hpp \
     VideoStream.hpp \
 	DisplayStream.hpp \
 	StandController.hpp \
-	Coordinate.hpp
+	Coordinate.hpp \
+    VideoDevice.hpp
