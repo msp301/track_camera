@@ -87,6 +87,7 @@ void GuiMainWindow::setupGui()
 
     //create video output label & add to top-level layout
     lbl_camera_output = new QLabel( "Camera Output" );
+    lbl_camera_output->setPixmap( QPixmap( 640, 480 ) ); //set label size
     v_layout->addWidget( lbl_camera_output );
 
     content->setLayout( v_layout ); //apply created layout to window
