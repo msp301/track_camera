@@ -39,7 +39,8 @@ bool VideoStream::create()
     if( capture == NULL )
     {
         //setup capture from camera that will be output to a video buffer
-        capture = new Capture( camera, video_buffer );
+        //capture = new Capture( camera, video_buffer );
+        capture = new TestCapture( camera, video_buffer );
 
         timer_capture = new QTimer( capture ); //setup capture event timer
         connect( timer_capture, SIGNAL( timeout() ),

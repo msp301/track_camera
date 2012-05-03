@@ -3,6 +3,7 @@
 
 #include <Capture.hpp>
 #include <VideoBuffer.hpp>
+#include <TestCapture.hpp>
 
 #include <QObject>
 #include <QTimer>
@@ -22,7 +23,8 @@ class VideoStream : public QObject
         bool remove();
         void setCamera( int camera_no );
     private:
-        Capture *capture;
+        //Capture *capture;
+        TestCapture *capture;
         VideoBuffer *video_buffer;
         cv::VideoCapture *camera;
         QTimer *timer_capture;

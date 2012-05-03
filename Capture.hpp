@@ -15,10 +15,10 @@ class Capture : public QThread
     public:
         Capture( cv::VideoCapture *camera, VideoBuffer *buffer );
         ~Capture();
-        void run();
-        cv::Mat grabFrame();
+        virtual void run();
+        virtual cv::Mat grabFrame();
     public slots:
-        void captureFrame();
+        virtual void captureFrame();
     private:
         cv::Mat frame;
         cv::VideoCapture *capture;
