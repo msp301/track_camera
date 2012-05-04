@@ -76,14 +76,15 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
         cv::equalizeHist( conv_frame, conv_frame );
 
         //load face classifier
-        if( haar_face_classifier.load( haar_face_classifier_location ) )
+        /*if( haar_face_classifier.load( haar_face_classifier_location ) )
         {
             //match faces of different sizes within video frame
             haar_face_classifier.detectMultiScale( conv_frame, faces, 1.1, 2,
                                     0 | CV_HAAR_SCALE_IMAGE, cv::Size( 2, 2 ) );
 
             qDebug() << "Faces detected = " << faces.size();
-        }
+        }*/
+
     }
 
     return faces; //return location of detected faces
@@ -94,7 +95,7 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 {
     //loop through each detected face and draw a rectangle around it,
     //scaling back to original frame size
-    foreach( cv::Rect face, faces )
+    /*foreach( cv::Rect face, faces )
     {
         cv::Point pt1( face.x * 4, face.y * 4 ); //top-left position of face area
 
@@ -108,7 +109,13 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
         qDebug() << "FaceTracking: adding detected frame to buffer";
 
         video_buffer->add( frame ); //add processed frame to output buffer
-    }
+    }*/
+
+    cv::Mat conv_frame, result;
+    cv::cvtColor( frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
+    cv::blur( conv_frame, conv_frame, cv::Size( 3, 3 ) );
+    //cv::Laplacian( conv_frame, result, 1, 3 );
+    video_buffer->add( conv_frame );
 }
 
 //determine central positions for each identified face
