@@ -15,7 +15,11 @@ cv::Mat TestCapture::grabFrame()
     cv::Mat frame;
 
     //capture frame from video device, only if it exists
-    if( capture ) capture->operator >>( frame );
+    //if( capture ) capture->operator >>( frame );
+
+    //read image from file
+    frame = cv::imread( "/home/martin/Pictures/Webcam/2012-05-03-174511.jpg" );
+    usleep( 20 );
 
     qDebug() << "TestCapture: Reimplemented grabFrame()";
 
