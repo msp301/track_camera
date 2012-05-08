@@ -17,7 +17,7 @@ class StandController
         ~StandController();
         QList<QextPortInfo> availablePorts();
         void setPort( QString port_name );
-        void sendFaceData( vector<Coordinate> coordinates );
+        void sendFaceData( Coordinate coordinate );
     private:
         QextSerialPort *serial_port;
         QextSerialEnumerator *ports;

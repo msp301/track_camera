@@ -51,15 +51,12 @@ void StandController::setPort( QString port_name )
 }
 
 //send face position data to hardware controller
-void StandController::sendFaceData( vector<Coordinate> coordinates )
+void StandController::sendFaceData( Coordinate coordinate )
 {
     QByteArray data;
 
-    int x = coordinates.at( 0 ).x;
-    int y = coordinates.at( 0 ).y;
-
-    data.insert( 0, x );
-    data.insert( 1, y );
+    data.insert( 0, coordinate.x );
+    data.insert( 1, coordinate.y );
 
     serial_port->write( data ); //send data on serial port
 

@@ -44,8 +44,9 @@ void FaceTracking::trackFaces()
 
         if( faces.size() > 0 )
         {
-            //receive and send face positions to stand controller
-            stand->sendFaceData( getFacePositions( faces ) );
+            //receive and send position of the closest face to stand controller
+            Coordinate track_position = getFacePosition( getClosestFace( faces ) );
+            stand->sendFaceData( track_position );
 
             if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
         }
@@ -87,6 +88,28 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     }
 
     return faces; //return location of detected faces
+}
+
+//retrieve the largest face from a given list of detected faces
+cv::Rect FaceTracking::getClosestFace( vector<cv::Rect> faces )
+{
+    cv::Rect largest_face;
+
+    foreach( cv::Rect face, faces )
+    {
+        if( !largest_face.width && !largest_face.height )
+        {
+            //set largest face if this is the first face being compared
+            largest_face = face;
+        }
+        else if( largest_face.area() < face.area() )
+        {
+            //update largest face if current is larger than previous
+            largest_face = face;
+        }
+    }
+
+    return largest_face;
 }
 
 //display detected faces to interface
@@ -136,6 +159,18 @@ vector<Coordinate> FaceTracking::getFacePositions(
     }
 
     return coordinates;
+}
+
+//retrieve position of a detected face
+Coordinate FaceTracking::getFacePosition( cv::Rect face )
+{
+    Coordinate face_position;
+
+    //find centre of face area
+    face_position.x = ( ( face.x + face.width ) - 1 ) / 2;
+    face_position.y = ( ( face.y + face.height ) - 1 ) / 2;
+
+    return face_position;
 }
 
 //check whether faces should be displayed
