@@ -57,7 +57,7 @@ void FaceTracking::trackFaces()
     }
 }
 
-//detect a face within a given frame//process non-empty frames only
+//detect a face within a given frame
 vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
 {
     //create target frame size to resize received frame to before processing
@@ -132,33 +132,6 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 
         video_buffer->add( frame ); //add processed frame to output buffer
     }
-}
-
-//determine central positions for each identified face
-vector<Coordinate> FaceTracking::getFacePositions(
-        vector<cv::Rect> faces )
-{
-    vector<Coordinate> coordinates;
-    Coordinate face_position;
-
-    //find central position of detected face areas
-    foreach( cv::Rect face, faces )
-    {
-        //find centre of given face area
-        face_position.x = ( ( face.x + face.width ) - 1 ) / 2;
-        face_position.y = ( ( face.y + face.height ) - 1 ) / 2;
-
-        //add coordinate to result vector
-        coordinates.push_back( face_position );
-    }
-
-    int i = 0;
-    foreach( Coordinate coordinate, coordinates )
-    {
-        qDebug() << "Coordinate " << i << "=" << coordinate.x << "," << coordinate.y;
-    }
-
-    return coordinates;
 }
 
 //retrieve position of a detected face
