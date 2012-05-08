@@ -34,7 +34,8 @@ SOURCES += main.cpp \
 	DisplayStream.cpp \
 	StandController.cpp \
     VideoDevice.cpp \
-    TestCapture.cpp
+    TestCapture.cpp \
+    TestFilters.cpp
 
 HEADERS  += Capture.hpp \
 	GuiMainWindow.hpp \
@@ -45,4 +46,5 @@ HEADERS  += Capture.hpp \
 	StandController.hpp \
 	Coordinate.hpp \
     VideoDevice.hpp \
-    TestCapture.hpp
+    TestCapture.hpp \
+    TestFilters.hpp

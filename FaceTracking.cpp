@@ -1,4 +1,5 @@
 #include "FaceTracking.hpp"
+#include "TestFilters.hpp"
 
 #include <QDebug>
 #include <QMutexLocker>
@@ -47,11 +48,11 @@ void FaceTracking::trackFaces()
             //receive and send face positions to stand controller
             stand->sendFaceData( getFacePositions( faces ) );
 
-            if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
+            //if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
         }
         else
         {
-            if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
+            //if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
         }
     }
 }
@@ -85,6 +86,10 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
             qDebug() << "Faces detected = " << faces.size();
         }*/
 
+        TestFilters *filters = new TestFilters;
+        cv::Mat result = filters->laplacianOfGaussian( conv_frame );
+        video_buffer->add( result );
+        delete filters;
     }
 
     return faces; //return location of detected faces
@@ -110,12 +115,6 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 
         video_buffer->add( frame ); //add processed frame to output buffer
     }*/
-
-    cv::Mat conv_frame, result;
-    cv::cvtColor( frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
-    cv::blur( conv_frame, conv_frame, cv::Size( 3, 3 ) );
-    //cv::Laplacian( conv_frame, result, 1, 3 );
-    video_buffer->add( conv_frame );
 }
 
 //determine central positions for each identified face
