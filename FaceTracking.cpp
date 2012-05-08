@@ -13,7 +13,7 @@ FaceTracking::FaceTracking( VideoBuffer *buffer, StandController *stand )
     video_buffer = buffer; //store local reference to given video buffer
     this->stand = stand; //store class accessible reference to stand controller
     haar_face_classifier_location =
-            "/home/martin/src/OpenCV-2.3.1/data/haarcascades/haarcascade_frontalface_default.xml";
+            "libs/haar_cascades/haarcascade_frontalface_default.xml";
 
     display_faces = false;
     mutex = new QMutex;
