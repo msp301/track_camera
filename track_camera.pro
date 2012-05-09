@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     VideoStream.cpp \
 	DisplayStream.cpp \
 	StandController.cpp \
-    VideoDevice.cpp
+	VideoDevice.cpp \
+	Application.cpp
 
 HEADERS  += Capture.hpp \
 	GuiMainWindow.hpp \
@@ -43,4 +44,5 @@ HEADERS  += Capture.hpp \
 	DisplayStream.hpp \
 	StandController.hpp \
 	Coordinate.hpp \
-    VideoDevice.hpp
+	VideoDevice.hpp \
+	Application.hpp

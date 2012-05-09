@@ -1,9 +1,9 @@
-#include <QtGui/QApplication>
+#include "Application.hpp"
 #include "GuiMainWindow.hpp"
 
 int main(int argc, char *argv[])
 {
-    QApplication app( argc, argv ); //create new Qt application container
+    Application app( argc, argv ); //create new Qt application container
     GuiMainWindow window; //create main window
     window.show(); //display main window
 
