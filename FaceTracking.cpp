@@ -74,7 +74,7 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
         cv::resize( frame, conv_frame, conv_frame.size(), 0, 0, CV_INTER_NN );
 
         cv::cvtColor( conv_frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
-        cv::equalizeHist( conv_frame, conv_frame );
+        //cv::equalizeHist( conv_frame, conv_frame );
 
         //load face classifier
         /*if( haar_face_classifier.load( haar_face_classifier_location ) )

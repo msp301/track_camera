@@ -10,6 +10,7 @@ class TestFilters
         TestFilters();
         cv::Mat laplacianOfGaussian( cv::Mat frame );
         cv::Mat diffOfGaussians( cv::Mat frame );
+        cv::Mat surf( cv::Mat frame );
 };
 
 #endif // TESTFILTERS_HPP
