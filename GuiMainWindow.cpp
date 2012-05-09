@@ -177,7 +177,17 @@ void GuiMainWindow::displayFrame( cv::Mat frame )
     //ensure we have received a valid video frame before displaying
     if( !frame.empty() )
     {
-        cv::cvtColor( frame, conv_frame, CV_BGR2RGB ); //convert to RGB colour
+        //check if image is in greyscale format
+        if( frame.type() == CV_8UC1 )
+        {
+            //convert greyscale image to RGB format
+            cv::cvtColor( frame, conv_frame, CV_GRAY2RGB );
+        }
+        else
+        {
+            //convert BGR colour to RGB colour format
+            cv::cvtColor( frame, conv_frame, CV_BGR2RGB );
+        }
 
         //create new QImage from OpenCV matrix format
         QImage image( ( uchar* ) conv_frame.data, conv_frame.cols,
