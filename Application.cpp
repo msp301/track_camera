@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-#include <QDebug>
+#include <opencv2/core/core.hpp>
 
 Application::Application( int argc, char *argv[] ) :
     QApplication( argc, argv )
@@ -15,9 +15,10 @@ bool Application::notify( QObject *receiver, QEvent *event )
         //attempt to execute notify as normal
         return QApplication::notify( receiver, event );
     }
-    catch( int e )
+    catch( cv::Exception exception )
     {
-        qDebug() << "Error: Cannot run notify of event";
+        //catch errors produced by OpenCV
+        //cv::Exception uses std::exception to output error to console
         return false;
     }
 }
