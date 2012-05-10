@@ -29,11 +29,14 @@ class FaceTracking : public QThread
         VideoBuffer *video_buffer;
         StandController *stand;
         string haar_face_classifier_location;
+        string haar_eye_classifier_location;
         vector<cv::Rect> previous_detected_faces;
         bool display_faces;
         QMutex *mutex;
 
         vector<cv::Rect> detectFace( cv::Mat frame );
+        vector<cv::Rect> filterFaces( cv::Mat frame );
+        vector<cv::Rect> filterEyes( cv::Mat frame );
         cv::Rect getClosestFace( vector<cv::Rect> faces );
         void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
         Coordinate getFacePosition( cv::Rect face );

@@ -15,6 +15,8 @@ FaceTracking::FaceTracking( VideoBuffer *buffer, StandController *stand )
     haar_face_classifier_location =
             "libs/haar_cascades/haarcascade_frontalface_default.xml";
 
+    haar_eye_classifier_location = "libs/haar_cascades/haarcascade_eye.xml";
+
     display_faces = false;
     mutex = new QMutex;
 }
@@ -64,30 +66,60 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     cv::Mat conv_frame = cv::Mat( ( frame.rows / 4 ),
                                   ( frame.cols / 4 ), CV_8UC2 );
 
+    //scale image to reduce processing load
+    cv::resize( frame, conv_frame, conv_frame.size(), 0, 0, CV_INTER_NN );
+
+    cv::cvtColor( conv_frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
+    cv::equalizeHist( conv_frame, conv_frame );
+
+    vector<cv::Rect> faces = filterFaces( conv_frame );
+    vector<cv::Rect> eyes = filterEyes( conv_frame );
+
+    faces.insert( faces.end(), eyes.begin(), eyes.end() );
+
+    return faces; //return location of detected faces
+}
+
+vector<cv::Rect> FaceTracking::filterFaces( cv::Mat frame )
+{
     cv::CascadeClassifier haar_face_classifier; //define classifier placeholder
     vector<cv::Rect> faces;
 
     //ensure we have received a valid video frame, before processing
-    if( !frame.empty() || !conv_frame.empty() )
+    if( !frame.empty() )
     {
-        //scale image to reduce processing load
-        cv::resize( frame, conv_frame, conv_frame.size(), 0, 0, CV_INTER_NN );
-
-        cv::cvtColor( conv_frame, conv_frame, CV_BGR2GRAY ); //convert to greyscale
-        cv::equalizeHist( conv_frame, conv_frame );
-
         //load face classifier
         if( haar_face_classifier.load( haar_face_classifier_location ) )
         {
             //match faces of different sizes within video frame
-            haar_face_classifier.detectMultiScale( conv_frame, faces, 1.1, 2,
+            haar_face_classifier.detectMultiScale( frame, faces, 1.1, 2,
                                     0 | CV_HAAR_SCALE_IMAGE, cv::Size( 2, 2 ) );
 
             qDebug() << "Faces detected = " << faces.size();
         }
     }
 
-    return faces; //return location of detected faces
+    return faces;
+}
+
+vector<cv::Rect> FaceTracking::filterEyes( cv::Mat frame )
+{
+    cv::CascadeClassifier haar_eye_classifier;
+    vector<cv::Rect> eyes;
+
+    //ensure we have received a valid video frame, before processing
+    if( !frame.empty() )
+    {
+        if( haar_eye_classifier.load( haar_eye_classifier_location ) )
+        {
+            haar_eye_classifier.detectMultiScale( frame, eyes, 1.1, 2,
+                                    0 | CV_HAAR_SCALE_IMAGE, cv::Size( 1, 1 ) );
+
+            qDebug() << "Eyes detected = " << eyes.size();
+        }
+    }
+
+    return eyes;
 }
 
 //retrieve the largest face from a given list of detected faces
