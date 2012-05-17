@@ -44,7 +44,12 @@ void FaceTracking::trackFaces()
     {
         faces = detectFace( frame );
 
-        if( faces.size() > 0 )
+        foreach( cv::Mat face, getFaceImages( frame, faces ) )
+        {
+            video_buffer->add( face );
+        }
+
+        /*if( faces.size() > 0 )
         {
             //receive and send position of the closest face to stand controller
             Coordinate track_position = getFacePosition( getClosestFace( faces ) );
@@ -55,7 +60,7 @@ void FaceTracking::trackFaces()
         else
         {
             if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
-        }
+        }*/
     }
 }
 
@@ -73,9 +78,11 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     cv::equalizeHist( conv_frame, conv_frame );
 
     vector<cv::Rect> faces = filterFaces( conv_frame );
-    vector<cv::Rect> eyes = filterEyes( conv_frame );
+    //vector<cv::Rect> eyes = filterEyes( conv_frame );
 
-    faces.insert( faces.end(), eyes.begin(), eyes.end() );
+    //faces.insert( faces.end(), eyes.begin(), eyes.end() );
+
+    //filterCorners( conv_frame ); //detect feature corners
 
     return faces; //return location of detected faces
 }
@@ -122,6 +129,19 @@ vector<cv::Rect> FaceTracking::filterEyes( cv::Mat frame )
     return eyes;
 }
 
+//detect and retrieve facial feature corners within given image
+vector<cv::Point2f> FaceTracking::filterCorners( cv::Mat frame )
+{
+    vector<cv::Point2f> corners;
+    cv::Mat conv_frame = cv::Mat( frame.rows, frame.cols, CV_8UC1 );
+
+    cv::goodFeaturesToTrack( conv_frame, corners, 50, 0.01, 1 );
+    cv::cornerSubPix( conv_frame, corners, cv::Size( 5, 5 ), cv::Size( -1, -1 ),
+                     cv::TermCriteria( CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 40, 0.001 ) );
+
+    return corners;
+}
+
 //retrieve the largest face from a given list of detected faces
 cv::Rect FaceTracking::getClosestFace( vector<cv::Rect> faces )
 {
@@ -144,9 +164,37 @@ cv::Rect FaceTracking::getClosestFace( vector<cv::Rect> faces )
     return largest_face;
 }
 
+//retrieve facial images
+vector<cv::Mat> FaceTracking::getFaceImages( cv::Mat frame, vector<cv::Rect> faces )
+{
+    vector<cv::Mat> face_frames;
+
+    foreach( cv::Rect face, faces )
+    {
+        //calculate face position, scaled from detected face coordinates
+        cv::Rect roi = cv::Rect( ( face.x * 4 ), ( face.y * 4 ),
+                                 ( face.width * 4 ), ( face.height * 4 ) );
+        cv::Mat face_frame = frame( roi ); //extract face image
+
+        face_frames.push_back( face_frame ); //add face to be returned
+    }
+
+    return face_frames;
+}
+
 //display detected faces to interface
 void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 {
+    vector<cv::Point2f> corners = filterCorners( frame );
+
+    for( int i; i < corners.size(); i++ )
+    {
+        cv::circle( frame, corners[i], 4, cv::Scalar( 0, 255, 0, 0 ), -1, 8, 0 );
+    }
+
+    qDebug() << "displayDetectedFaces(): Displayed" << corners.size() <<
+                "Corners";
+
     //loop through each detected face and draw a rectangle around it,
     //scaling back to original frame size
     foreach( cv::Rect face, faces )
@@ -159,11 +207,9 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 
         //draw rectangle on image to specified size of face
         cv::rectangle( frame, pt1, pt2, cv::Scalar( 255, 0, 0, 0 ), 4, 8, 0 );
-
-        qDebug() << "FaceTracking: adding detected frame to buffer";
-
-        video_buffer->add( frame ); //add processed frame to output buffer
     }
+
+    video_buffer->add( frame ); //add processed frame to output buffer
 }
 
 //retrieve position of a detected face

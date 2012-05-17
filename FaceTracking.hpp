@@ -37,7 +37,9 @@ class FaceTracking : public QThread
         vector<cv::Rect> detectFace( cv::Mat frame );
         vector<cv::Rect> filterFaces( cv::Mat frame );
         vector<cv::Rect> filterEyes( cv::Mat frame );
+        vector<cv::Point2f> filterCorners( cv::Mat frame );
         cv::Rect getClosestFace( vector<cv::Rect> faces );
+        vector<cv::Mat> getFaceImages( cv::Mat frame, vector<cv::Rect> faces );
         void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
         Coordinate getFacePosition( cv::Rect face );
 };
