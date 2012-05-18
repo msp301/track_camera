@@ -5,6 +5,7 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/video/tracking.hpp>
 
 using namespace std;
 
@@ -36,6 +37,7 @@ void FaceTracking::run()
 void FaceTracking::trackFaces()
 {
     vector<cv::Rect> faces;
+    vector<cv::RotatedRect> prob_faces;
 
     cv::Mat frame = video_buffer->read(); //read frame from video buffer
 
@@ -44,23 +46,74 @@ void FaceTracking::trackFaces()
     {
         faces = detectFace( frame );
 
-        foreach( cv::Mat face, getFaceImages( frame, faces ) )
+        if( faces.size() > 0 )
         {
-            video_buffer->add( face );
+            prev_faces.clear();
+            foreach( cv::Rect face, faces )
+            {
+                prev_faces.push_back( face ); //update last seen face
+            }
         }
 
-        /*if( faces.size() > 0 )
+        cv::RotatedRect face_area;
+        if( faces.size() > 0 )
+        {
+            qDebug() << "Frontal Faces = " << faces.size();
+            setTrackFace( frame, faces.at( 0 ) );
+            //position = cv::Point2f( ( face_area.center.x * 4 ),
+            //                        ( face_area.center.y * 4 ) );
+            //cv::circle( frame, position, 4, cv::Scalar( 0, 255, 0, 0 ),
+            //            -1, 8, 0 );
+        }
+        else
+        {
+            qDebug() << "No Frontal Faces";
+
+            prob_faces.clear();
+            foreach( cv::Rect face, prev_faces )
+            {
+                face_area = trackFace( frame, face );
+                prob_faces.push_back( face_area );
+            }
+
+            //cv::circle( frame, position, 4, cv::Scalar( 0, 255, 0, 0 ),
+            //            -1, 8, 0 );
+        }
+
+        /*foreach( cv::Mat face, getFaceImages( frame, faces ) )
+        {
+            vector<cv::Point2f> corners = filterCorners( face );
+
+            for( int i; i < corners.size(); i++ )
+            {
+                cv::circle( face, corners[i], 4, cv::Scalar( 0, 255, 0, 0 ), -1, 8, 0 );
+            }
+
+            video_buffer->add( face );
+        }*/
+
+        if( faces.size() > 0 )
         {
             //receive and send position of the closest face to stand controller
             Coordinate track_position = getFacePosition( getClosestFace( faces ) );
             stand->sendFaceData( track_position );
 
+            qDebug() << "Actual face location at: " << track_position.x
+                     << "," << track_position.y;
+
             if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
         }
-        else
+        else if( prob_faces.size() > 0 )
         {
-            if( showDetectedFaces() ) displayDetectedFaces( frame, faces );
-        }*/
+            //recieve and send estimated position of face to stand controller
+            Coordinate track_position = getFacePosition( prob_faces.at( 0 ) );
+            stand->sendFaceData( track_position );
+
+            qDebug() << "Estimated face location at: " << track_position.x
+                     << "," << track_position.y;
+
+            if( showDetectedFaces() ) displayDetectedFaces( frame, prob_faces );
+        }
     }
 }
 
@@ -85,6 +138,69 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
     //filterCorners( conv_frame ); //detect feature corners
 
     return faces; //return location of detected faces
+}
+
+//set hue image to use for locating lost faces
+void FaceTracking::setHueImage( cv::Mat image )
+{
+    int smin = 50;
+    int vmin = 60;
+    int vmax = 150;
+
+    cv::cvtColor( image, image, CV_BGR2HSV ); //convert to HSV format
+    cv::inRange( image, cv::Scalar( 0, smin, vmin, 0 ),
+                 cv::Scalar( 180, 256, vmax, 0 ), mask );
+    hue = cv::Mat( image.rows, image.cols, image.type() );
+
+    vector<cv::Mat> colour_channels;
+    cv::split( image, colour_channels ); //separate colour channels
+    hue = colour_channels.at( 0 ); //extract hue channel from HSV image
+}
+
+//track a given face
+void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
+{
+    cv::Mat face_image;
+
+    //create target frame size to resize received frame to before processing
+    cv::Mat conv_face_image = cv::Mat( ( frame.rows / 4 ),
+                                  ( frame.cols / 4 ), CV_8UC2 );
+
+    getFaceImage( frame, face ).copyTo( face_image );
+
+    //scale image to reduce processing load
+    cv::resize( face_image, conv_face_image,
+                conv_face_image.size(), 0, 0, CV_INTER_NN );
+
+    setHueImage( conv_face_image );
+
+    int hbins = 30, sbins = 32;
+    int histSize[] = { hbins, sbins };
+    float hranges[] = { 0, 180 };
+    float sranges[] = { 0, 256 };
+    const float *ranges[] = { hranges, sranges };
+    int channels[] = { 0, 1 };
+
+    cv::calcHist( &conv_face_image, 1, channels, mask, hist, 2, histSize,
+                  ranges, true, false );
+    //cv::normalize( hist, hist, 0, 255, CV_MINMAX );
+}
+
+//locate face that has been lost
+cv::RotatedRect FaceTracking::trackFace( cv::Mat frame, cv::Rect prev_face )
+{
+    float hranges[] = { 0, 180 };
+    float sranges[] = { 0, 256 };
+    const float *ranges[] = { hranges, sranges };
+    int channels[] = { 0, 1 };
+    cv::Mat bp;
+
+    cv::calcBackProject( &frame, 1, channels, hist, bp, ranges, 1, true );
+
+    cv::RotatedRect foundObject = cv::CamShift( bp, prev_face,
+       cv::TermCriteria( cv::TermCriteria::COUNT | cv::TermCriteria::EPS, 10, 1 ) );
+
+    return foundObject;
 }
 
 vector<cv::Rect> FaceTracking::filterFaces( cv::Mat frame )
@@ -135,7 +251,7 @@ vector<cv::Point2f> FaceTracking::filterCorners( cv::Mat frame )
     vector<cv::Point2f> corners;
     cv::Mat conv_frame = cv::Mat( frame.rows, frame.cols, CV_8UC1 );
 
-    cv::goodFeaturesToTrack( conv_frame, corners, 50, 0.01, 1 );
+    cv::goodFeaturesToTrack( conv_frame, corners, 50, 0.01, 10 );
     cv::cornerSubPix( conv_frame, corners, cv::Size( 5, 5 ), cv::Size( -1, -1 ),
                      cv::TermCriteria( CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 40, 0.001 ) );
 
@@ -182,10 +298,21 @@ vector<cv::Mat> FaceTracking::getFaceImages( cv::Mat frame, vector<cv::Rect> fac
     return face_frames;
 }
 
+//retrieve facial image for a single face
+cv::Mat FaceTracking::getFaceImage( cv::Mat frame, cv::Rect face )
+{
+    //calculate face position, scaled from detected face coordinates
+    cv::Rect roi = cv::Rect( ( face.x * 4 ), ( face.y * 4 ),
+                             ( face.width * 4 ), ( face.height * 4 ) );
+    cv::Mat face_frame = frame( roi ); //extract face image
+
+    return face_frame;
+}
+
 //display detected faces to interface
 void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 {
-    vector<cv::Point2f> corners = filterCorners( frame );
+    /*vector<cv::Point2f> corners = filterCorners( frame );
 
     for( int i; i < corners.size(); i++ )
     {
@@ -194,6 +321,7 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
 
     qDebug() << "displayDetectedFaces(): Displayed" << corners.size() <<
                 "Corners";
+    */
 
     //loop through each detected face and draw a rectangle around it,
     //scaling back to original frame size
@@ -212,6 +340,29 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces )
     video_buffer->add( frame ); //add processed frame to output buffer
 }
 
+//display detected rotated faces to interface
+void FaceTracking::displayDetectedFaces( cv::Mat frame,
+                                         vector<cv::RotatedRect> faces )
+{
+    //loop through each detected face and draw a rectangle around its
+    //area boundaries
+    foreach( cv::RotatedRect face, faces )
+    {
+        cv::Rect face_area = face.boundingRect(); //get face area boundaries
+
+        //top-left position of face area
+        cv::Point pt1( face_area.x, face_area.y );
+
+        //calculate bottom-right coordinates of face given its area
+        cv::Point pt2( ( ( ( ( face_area.x + face_area.width ) - 1 ) ) ),
+                       ( ( ( ( face_area.y + face_area.height ) - 1 ) ) ) );
+
+        cv::rectangle( frame, pt1, pt2, cv::Scalar( 0, 255, 0, 0 ), 4, 8, 0 );
+    }
+
+    video_buffer->add( frame ); //add processed frame to output buffer
+}
+
 //retrieve position of a detected face
 Coordinate FaceTracking::getFacePosition( cv::Rect face )
 {
@@ -220,6 +371,18 @@ Coordinate FaceTracking::getFacePosition( cv::Rect face )
     //find centre of face area
     face_position.x = ( ( face.x + face.width ) - 1 ) / 2;
     face_position.y = ( ( face.y + face.height ) - 1 ) / 2;
+
+    return face_position;
+}
+
+//retrieve position of detected rotated face
+Coordinate FaceTracking::getFacePosition( cv::RotatedRect face )
+{
+    Coordinate face_position;
+
+    //find centre of rotated face area
+    face_position.x = face.center.x;
+    face_position.y = face.center.y;
 
     return face_position;
 }

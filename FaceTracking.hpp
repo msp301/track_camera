@@ -33,15 +33,24 @@ class FaceTracking : public QThread
         vector<cv::Rect> previous_detected_faces;
         bool display_faces;
         QMutex *mutex;
+        vector<cv::Rect> prev_faces;
+        cv::Mat hue, mask;
+        cv::MatND hist;
 
         vector<cv::Rect> detectFace( cv::Mat frame );
+        void setHueImage( cv::Mat image );
+        void setTrackFace( cv::Mat frame, cv::Rect face );
+        cv::RotatedRect trackFace( cv::Mat frame, cv::Rect prev_face );
         vector<cv::Rect> filterFaces( cv::Mat frame );
         vector<cv::Rect> filterEyes( cv::Mat frame );
         vector<cv::Point2f> filterCorners( cv::Mat frame );
         cv::Rect getClosestFace( vector<cv::Rect> faces );
         vector<cv::Mat> getFaceImages( cv::Mat frame, vector<cv::Rect> faces );
+        cv::Mat getFaceImage( cv::Mat frame, cv::Rect face );
         void displayDetectedFaces( cv::Mat frame, vector<cv::Rect> faces );
+        void displayDetectedFaces( cv::Mat frame, vector<cv::RotatedRect> faces );
         Coordinate getFacePosition( cv::Rect face );
+        Coordinate getFacePosition( cv::RotatedRect face );
 };
 
 #endif // FACETRACKING_HPP
