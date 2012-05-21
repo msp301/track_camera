@@ -34,11 +34,11 @@ class FaceTracking : public QThread
         bool display_faces;
         QMutex *mutex;
         vector<cv::Rect> prev_faces;
-        cv::Mat hue, mask;
+        cv::Mat mask;
         cv::MatND hist;
 
         vector<cv::Rect> detectFace( cv::Mat frame );
-        void setHueImage( cv::Mat image );
+        cv::Mat convHueImage( cv::Mat image );
         void setTrackFace( cv::Mat frame, cv::Rect face );
         cv::RotatedRect trackFace( cv::Mat frame, cv::Rect prev_face );
         vector<cv::Rect> filterFaces( cv::Mat frame );

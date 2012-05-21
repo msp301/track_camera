@@ -141,20 +141,25 @@ vector<cv::Rect> FaceTracking::detectFace( cv::Mat frame )
 }
 
 //set hue image to use for locating lost faces
-void FaceTracking::setHueImage( cv::Mat image )
+cv::Mat FaceTracking::convHueImage( cv::Mat image )
 {
     int smin = 50;
     int vmin = 60;
     int vmax = 150;
 
+    qDebug() << "Converting colour";
     cv::cvtColor( image, image, CV_BGR2HSV ); //convert to HSV format
+
+    qDebug() << "Setting range";
     cv::inRange( image, cv::Scalar( 0, smin, vmin, 0 ),
                  cv::Scalar( 180, 256, vmax, 0 ), mask );
-    hue = cv::Mat( image.rows, image.cols, image.type() );
 
+    qDebug() << "Splitting channels";
     vector<cv::Mat> colour_channels;
     cv::split( image, colour_channels ); //separate colour channels
-    hue = colour_channels.at( 0 ); //extract hue channel from HSV image
+
+    qDebug() << "Exiting convHueImage()";
+    return colour_channels.at( 0 ); //extract hue channel from HSV image
 }
 
 //track a given face
@@ -164,7 +169,7 @@ void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
 
     //create target frame size to resize received frame to before processing
     cv::Mat conv_face_image = cv::Mat( ( frame.rows / 4 ),
-                                  ( frame.cols / 4 ), CV_8UC2 );
+                                  ( frame.cols / 4 ), frame.type() );
 
     getFaceImage( frame, face ).copyTo( face_image );
 
@@ -172,7 +177,12 @@ void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
     cv::resize( face_image, conv_face_image,
                 conv_face_image.size(), 0, 0, CV_INTER_NN );
 
-    setHueImage( conv_face_image );
+    cv::Mat hue_face_image = cv::Mat( conv_face_image.rows,
+                                      conv_face_image.cols, CV_8UC2 );
+
+    qDebug() << "About to conv hue";
+    convHueImage( conv_face_image ).copyTo( hue_face_image ); //convert to hue image
+    qDebug() << "Copied hue face image";
 
     int hbins = 30, sbins = 32;
     int histSize[] = { hbins, sbins };
@@ -181,14 +191,26 @@ void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
     const float *ranges[] = { hranges, sranges };
     int channels[] = { 0, 1 };
 
-    cv::calcHist( &conv_face_image, 1, channels, mask, hist, 2, histSize,
+    qDebug() << "About to calculate Hist";
+    cv::calcHist( &frame, 1, channels, mask, hist, 2, histSize,
                   ranges, true, false );
-    //cv::normalize( hist, hist, 0, 255, CV_MINMAX );
+    qDebug() << "Calculated Hist";
+    cv::normalize( hist, hist, 0, 255, CV_MINMAX );
+    qDebug() << "Normalised Hist";
+
+    double histMax;
+    cv::minMaxLoc( hist, 0, &histMax );
+    hist *= histMax ? 255.0 / histMax : 0.0;
 }
 
 //locate face that has been lost
 cv::RotatedRect FaceTracking::trackFace( cv::Mat frame, cv::Rect prev_face )
 {
+    qDebug() << "Entered trackFace()";
+
+    //cv::Mat hue_frame = cv::Mat( frame.rows, frame.cols, frame.type() );
+    //convHueImage( frame ).copyTo( hue_frame );
+
     float hranges[] = { 0, 180 };
     float sranges[] = { 0, 256 };
     const float *ranges[] = { hranges, sranges };
@@ -196,6 +218,7 @@ cv::RotatedRect FaceTracking::trackFace( cv::Mat frame, cv::Rect prev_face )
     cv::Mat bp;
 
     cv::calcBackProject( &frame, 1, channels, hist, bp, ranges, 1, true );
+    //cv::bitwise_and( bp, mask, bp, 0 );
 
     cv::RotatedRect foundObject = cv::CamShift( bp, prev_face,
        cv::TermCriteria( cv::TermCriteria::COUNT | cv::TermCriteria::EPS, 10, 1 ) );
@@ -351,11 +374,11 @@ void FaceTracking::displayDetectedFaces( cv::Mat frame,
         cv::Rect face_area = face.boundingRect(); //get face area boundaries
 
         //top-left position of face area
-        cv::Point pt1( face_area.x, face_area.y );
+        cv::Point pt1( face_area.x * 4, face_area.y * 4 );
 
         //calculate bottom-right coordinates of face given its area
-        cv::Point pt2( ( ( ( ( face_area.x + face_area.width ) - 1 ) ) ),
-                       ( ( ( ( face_area.y + face_area.height ) - 1 ) ) ) );
+        cv::Point pt2( ( ( ( ( face_area.x + face_area.width ) - 1 ) ) * 4 ),
+                       ( ( ( ( face_area.y + face_area.height ) - 1 ) ) * 4 ) );
 
         cv::rectangle( frame, pt1, pt2, cv::Scalar( 0, 255, 0, 0 ), 4, 8, 0 );
     }
