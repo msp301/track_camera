@@ -147,10 +147,18 @@ cv::Mat FaceTracking::convHueImage( cv::Mat image )
     int vmin = 60;
     int vmax = 150;
 
-    qDebug() << "Converting colour";
-    cv::cvtColor( image, image, CV_BGR2HSV ); //convert to HSV format
+    cv::Mat hsv_image;
 
-    qDebug() << "Setting range";
+    qDebug() << "Converting colour";
+    cv::cvtColor( image, hsv_image, CV_BGR2HSV ); //convert to HSV format
+
+    inRange( hsv_image, cv::Scalar( 0, smin, MIN( vmin, vmax ) ),
+            cv::Scalar( 180, 256, MAX( vmin, vmax ) ), mask );
+    int channels[] = { 0, 0 };
+    hue.create( image.size(), image.depth() );
+    cv::mixChannels( &hsv_image, 1, &hue, 1, channels, 1 );
+
+    /*qDebug() << "Setting range";
     cv::inRange( image, cv::Scalar( 0, smin, vmin, 0 ),
                  cv::Scalar( 180, 256, vmax, 0 ), mask );
 
@@ -160,6 +168,9 @@ cv::Mat FaceTracking::convHueImage( cv::Mat image )
 
     qDebug() << "Exiting convHueImage()";
     return colour_channels.at( 0 ); //extract hue channel from HSV image
+    */
+
+    return hue;
 }
 
 //track a given face
@@ -173,16 +184,20 @@ void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
 
     getFaceImage( frame, face ).copyTo( face_image );
 
-    //scale image to reduce processing load
-    cv::resize( face_image, conv_face_image,
-                conv_face_image.size(), 0, 0, CV_INTER_NN );
+    cv::Mat hue_image = convHueImage( face_image ); //get hue face region
+    cv::Mat mask_image = cv::Mat( mask, face ); //get masked face region
 
-    cv::Mat hue_face_image = cv::Mat( conv_face_image.rows,
+    //scale image to reduce processing load
+    //cv::resize( face_image, conv_face_image,
+    //            conv_face_image.size(), 0, 0, CV_INTER_NN );
+
+    /*cv::Mat hue_face_image = cv::Mat( conv_face_image.rows,
                                       conv_face_image.cols, CV_8UC2 );
 
     qDebug() << "About to conv hue";
     convHueImage( conv_face_image ).copyTo( hue_face_image ); //convert to hue image
     qDebug() << "Copied hue face image";
+    */
 
     int hbins = 30, sbins = 32;
     int histSize[] = { hbins, sbins };
@@ -192,8 +207,8 @@ void FaceTracking::setTrackFace( cv::Mat frame, cv::Rect face )
     int channels[] = { 0, 1 };
 
     qDebug() << "About to calculate Hist";
-    cv::calcHist( &frame, 1, channels, mask, hist, 2, histSize,
-                  ranges, true, false );
+    cv::calcHist( &hue_image, 1, 0, mask_image, hist, 1, histSize,
+                  ranges );
     qDebug() << "Calculated Hist";
     cv::normalize( hist, hist, 0, 255, CV_MINMAX );
     qDebug() << "Normalised Hist";
