@@ -76,14 +76,14 @@ void loop()
 			is_y_centre = 1;
 			if( y > ( 37 + 5 ) )
 			{
-				servo_y_position = servo_y_position - 5; //update y-axis servo position
-				if( servo_y_position < 25 ) servo_y_position = 25; //stop at min position
+				servo_y_position = servo_y_position + 5; //update y-axis servo position
+				if( servo_y_position > 100 ) servo_y_position = 100; //stop at min position
 				is_y_centre = 0;
 			}
 			else if( y < ( 37 - 5 ) )
 			{
-				servo_y_position = servo_y_position + 5; //update y-axis servo position
-				if( servo_y_position > 100 ) servo_y_position = 100; //stop at max position
+				servo_y_position = servo_y_position - 5; //update y-axis servo position
+				if( servo_y_position < 25 ) servo_y_position = 25; //stop at max position
 				is_y_centre = 0;
 			}
 		}
