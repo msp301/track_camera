@@ -4,6 +4,10 @@
 
 #include <QDebug>
 
+#include <unistd.h>
+
+using namespace std;
+
 GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     QString cap_buffer( "capture" );
