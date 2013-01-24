@@ -2,3 +2,11 @@ Face Tracking Camera Project
 
 Project Statement:
 "Create an application using a library such as OpenCV capable of using a webcam device to identify a persons' face and follow their movement by controlling a motorised camera stand to keep them in the camera's sight. The project will also require building a stand that can rotate the camera left or right and raise or lower the camera's position."
+
+Prerequisites:
+- OpenCV >= 2.3.1
+- libudev-dev
+- qextserialport
+
+** qextserialport can be installed by cloning the latest source into the "libs" directory.
+Refer to the qextserialport development site for further information http://code.google.com/p/qextserialport/
