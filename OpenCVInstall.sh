@@ -5,7 +5,7 @@
 # downloads and installs OpenCV libraries
 
 FFMPEG_REPO="http://ppa.launchpad.net/jon-serverinsson/ffmpeg/ubuntu"
-OPENCV_ADDR="http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3.1/OpenCV-2.3.1a.tar.bz2"
+OPENCV_ADDR="http://sourceforge.net/projects/opencvlibrary/files/latest/download"
 
 # obtain system codename to install appropriate packages
 SYSTEM_CODENAME=`lsb_release -sc`
@@ -33,8 +33,8 @@ gstreamer0.10-plugins-ugly gstreamer0.10-plugins-bad gstreamer0.10-ffmpeg`
 
 echo "Retrieving OpenCV from \"$OPENCV_ADDR\""
 
-# install curl if not installed on system
-if [ !`command -v curl` ]; then
-	`sudo apt-get -y install curl`
+# install wget if not installed on system
+if [ !`command -v wget` ]; then
+	`sudo apt-get -y install wget`
 fi
-`curl -# -O "http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3.1/OpenCV-2.3.1a.tar.bz2"`
+`wget -O opencv "$OPENCV_ADDR"`
