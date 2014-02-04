@@ -14,7 +14,19 @@ GuiMainWindow::GuiMainWindow(QWidget *parent) : QMainWindow(parent)
 
     video_buffer = new VideoBuffer( cap_buffer ); //create video buffer for captured frames
     video_device = new VideoDevice();
-    video_device->getDeviceNumber( video_device->getDeviceList().at( 0 ) );
+
+    // Confirm that a video device is connected before attempting to retrieve
+    // its information
+    vector<std::string> devices = video_device->getDeviceList();
+    if( devices.size() > 0 )
+    {
+        video_device->getDeviceNumber( devices.at( 0 ) );
+    }
+    else
+    {
+        qDebug() << "Failed to find video device" << endl;
+    }
+
     video_stream = new VideoStream( video_buffer ); //create video stream handler
 
     stand = new StandController; //create new stand control handler
