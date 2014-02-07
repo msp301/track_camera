@@ -9,8 +9,15 @@
 #include "FaceTracking.hpp"
 #include "StandController.hpp"
 
-#include <QtGui>
+#include <QApplication>
+#include <QMainWindow>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QComboBox>
+#include <QLabel>
 #include <QTimer>
+#include <QMenu>
+#include <QMenuBar>
 
 #include <opencv2/core/core.hpp>
 

@@ -6,7 +6,7 @@
 
 include( libs/qextserialport/src/qextserialport.pri )
 
-QT       += core gui
+QT       += core gui widgets
 
 TARGET = track_camera
 TEMPLATE = app
