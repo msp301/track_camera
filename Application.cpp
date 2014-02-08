@@ -2,7 +2,7 @@
 
 #include <opencv2/core/core.hpp>
 
-Application::Application( int argc, char *argv[] ) :
+Application::Application( int &argc, char *argv[] ) :
     QApplication( argc, argv )
 {
 }
